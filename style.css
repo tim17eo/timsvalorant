@@ -242,3 +242,12 @@ footer{display:flex;align-items:center;justify-content:space-between;gap:24px;fl
 .footer-qr img{display:block;width:132px;height:132px;object-fit:contain;background:#fff;padding:5px;border-radius:8px}
 .footer-qr span{font-size:8px;letter-spacing:1.2px;color:var(--muted);text-align:center}
 @media(max-width:700px){.footer-qr img{width:116px;height:116px}footer{justify-content:center;text-align:center}}
+
+
+/* Navigation entre les pages */
+main>section[hidden]{display:none!important}
+.site-header nav{gap:clamp(9px,1.05vw,17px)}
+.site-header nav a{white-space:nowrap;font-size:clamp(8px,.62vw,10px)}
+.site-header nav a.active-page{color:var(--red)}
+.site-header nav a.active-page:after{content:"";display:block;height:2px;background:var(--red);margin-top:7px}
+@media(max-width:1100px) and (min-width:701px){.site-header{padding:0 3vw}.site-header nav{gap:9px}.site-header nav a{font-size:8px}.brand{font-size:16px}.header-profile{margin-left:10px}}
