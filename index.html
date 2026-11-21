@@ -7,14 +7,14 @@
 <title>TimsValorant — Ton assistant tactique</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=16">
+<link rel="stylesheet" href="style.css?v=17">
 </head>
 <body>
 <div class="top-line"></div>
 <header class="site-header"><a class="brand" href="?page=home"><span class="brand-mark">TV</span><span>TIMS<span class="brand-light">VALORANT</span></span></a>
 <button class="header-profile" id="headerProfileButton" type="button" hidden aria-label="Ouvrir mon profil"><img id="headerProfileAvatar" alt=""><span class="header-profile-initial" id="headerProfileInitial">J</span></button>
 <button class="menu-toggle" id="menuToggle" aria-label="Ouvrir le menu" aria-expanded="false">☰</button>
-<nav id="mainNav"><a href="?page=home">ACCUEIL</a><a href="?page=maps">MAPS</a><a href="?page=agents">AGENTS</a><a href="?page=duel">DUEL</a><a href="?page=weapons">ARMES</a><a href="?page=crosshair">VISEUR</a><a href="?page=random">RANDOM</a><a href="?page=advisor">MON AGENT</a><a href="?page=credits">CRÉDITS</a><a href="?page=account" class="account-nav-link">MON COMPTE</a></nav></header>
+<nav id="mainNav"><a href="?page=home">ACCUEIL</a><a href="?page=maps">MAPS</a><a href="?page=agents">AGENTS</a><a href="?page=duel">DUEL</a><a href="?page=weapons">ARMES</a><a href="?page=skins">SKINS</a><a href="?page=crosshair">VISEUR</a><a href="?page=random">RANDOM</a><a href="?page=advisor">MON AGENT</a><a href="?page=credits">CRÉDITS</a><a href="?page=account" class="account-nav-link">MON COMPTE</a></nav></header>
 <main>
 <section class="hero" id="home"><div class="hero-grid"></div><div class="hero-copy"><p class="eyebrow"><span class="status-dot"></span> TON ASSISTANT VALORANT</p><h1>PREPARE<br><span>YOUR</span> GAME.</h1><p class="hero-intro">Trouve un agent adapté à ta map, découvre le roster et prépare ta prochaine partie avec des outils simples.</p><div class="hero-actions"><a class="button button-primary" href="#advisor">TROUVER MON AGENT <span>↘</span></a><a class="text-link" href="#maps">Explorer les maps →</a></div></div>
 <div class="hero-art"><div class="art-ring ring-one"></div><div class="art-ring ring-two"></div><div class="art-slash"></div><div class="art-label">TV<span>/</span></div><div class="art-cross">✳</div><div class="art-caption">MAP • AGENT • STRATEGY</div></div>
@@ -41,6 +41,18 @@
   </div>
 </section>
 
+<section class="section skins-section" id="skins">
+<div class="section-heading"><p class="eyebrow">COLLECTION / COSMETICS</p><h2>SKINS <span>VALORANT</span></h2><p class="section-desc">Explore les skins d’armes, recherche tes collections préférées et découvre leurs variantes visuelles.</p></div>
+<div class="skins-toolbar">
+  <label class="skins-search"><span>RECHERCHER UN SKIN</span><input id="skinSearch" type="search" placeholder="Ex. Prime, Vandal, Reaver…"></label>
+  <label class="skins-filter"><span>TYPE D’ARME</span><select id="skinCategory"><option value="all">Toutes les armes</option><option value="Sidearm">Pistolets</option><option value="SMG">PM</option><option value="Shotgun">Fusils à pompe</option><option value="Rifle">Fusils</option><option value="Sniper">Snipers</option><option value="Heavy">Mitrailleuses</option><option value="Melee">Mêlée</option></select></label>
+</div>
+<div class="skins-status" id="skinsStatus" role="status">Chargement du catalogue des skins…</div>
+<div class="skins-grid" id="skinsGrid"></div>
+<div class="skins-load-wrap"><button class="button button-primary" id="skinsLoadMore" type="button" hidden>VOIR PLUS DE SKINS ↓</button></div>
+<p class="data-note">Catalogue communautaire alimenté par l’API publique Valorant-API. Les prix en VP et la disponibilité en boutique ne sont pas fournis de façon fiable par cette API : vérifie le client VALORANT.</p>
+<div class="skin-modal" id="skinModal" hidden><div class="skin-modal-backdrop" data-skin-close></div><div class="skin-modal-box" role="dialog" aria-modal="true" aria-labelledby="skinModalTitle"><button class="skin-modal-close" type="button" data-skin-close aria-label="Fermer">×</button><div class="skin-modal-visual"><img id="skinModalImage" alt=""></div><div class="skin-modal-info"><span class="eyebrow" id="skinModalWeapon"></span><h3 id="skinModalTitle"></h3><p id="skinModalDescription">Découvre les variantes disponibles pour ce skin.</p><div class="skin-chromas" id="skinModalChromas"></div></div></div></div>
+</section>
 <section class="section weapons-section" id="weapons"><div class="section-heading"><p class="eyebrow">03 / WEAPON DATABASE</p><h2>ARSENAL <span>VALORANT</span></h2><p class="section-desc">Découvre les armes du jeu. Clique sur une carte pour afficher son visuel et ses statistiques.</p></div><div class="filter-row" id="weaponFilters"><button class="filter-btn selected" data-weapon-category="Tous">Toutes</button><button class="filter-btn" data-weapon-category="Sidearm">Pistolets</button><button class="filter-btn" data-weapon-category="SMG">PM</button><button class="filter-btn" data-weapon-category="Shotgun">Fusils à pompe</button><button class="filter-btn" data-weapon-category="Rifle">Fusils</button><button class="filter-btn" data-weapon-category="Sniper">Snipers</button><button class="filter-btn" data-weapon-category="Heavy">Mitrailleuses</button><button class="filter-btn" data-weapon-category="Melee">Mêlée</button></div><div class="weapon-grid" id="weaponGrid"></div>
 <div class="weapon-compare" id="weaponCompare">
   <div class="compare-heading"><span class="eyebrow">WEAPON LAB</span><h3>COMPARATEUR <span>D’ARMES</span></h3><p>Choisis deux armes pour comparer leurs statistiques côte à côte.</p></div>
@@ -123,11 +135,11 @@
 </main>
 <footer><a class="brand footer-brand" href="?page=home"><span class="brand-mark">TV</span><span>TIMS<span class="brand-light">VALORANT</span></span></a><p>FAN-MADE WEBSITE • NON AFFILIÉ À RIOT GAMES</p><div class="footer-qr"><img src="assets/timsvalorant-qr.svg" alt="QR code TimsValorant"><span>SCANNER POUR VISITER TIMSVALORANT</span></div><a href="?page=home" class="back-top">ACCUEIL ↑</a></footer>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="script.js?v=15"></script>
+<script src="script.js?v=16"></script>
 <script>
 document.addEventListener("DOMContentLoaded",function(){
- const pageMap={home:["home"],maps:["maps"],agents:["agents"],duel:["agentCompare"],weapons:["weapons"],crosshair:["crosshair"],random:["random"],advisor:["advisor"],credits:["credits"],account:["account"]};
- const titles={home:"Accueil",maps:"Maps",agents:"Agents",duel:"Duel d’agents",weapons:"Armes",crosshair:"Générateur de viseur",random:"Agent random",advisor:"Mon agent",credits:"Crédits",account:"Mon compte"};
+ const pageMap={home:["home"],maps:["maps"],agents:["agents"],duel:["agentCompare"],weapons:["weapons"],crosshair:["crosshair"],skins:["skins"],random:["random"],advisor:["advisor"],credits:["credits"],account:["account"]};
+ const titles={home:"Accueil",maps:"Maps",agents:"Agents",duel:"Duel d’agents",weapons:"Armes",crosshair:"Générateur de viseur",skins:"Skins",random:"Agent random",advisor:"Mon agent",credits:"Crédits",account:"Mon compte"};
  const sections=Array.from(document.querySelectorAll("main > section"));
  function pageFromHash(hash){const id=(hash||"").replace("#","");if(!id)return "home";for(const [page,ids] of Object.entries(pageMap)){if(ids.includes(id))return page;}return "home";}
  function showPage(page,update){
