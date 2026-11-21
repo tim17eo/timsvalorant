@@ -358,6 +358,54 @@ document.addEventListener("DOMContentLoaded", function () {
     if (select) select.innerHTML = agentNames.map(name => '<option value="' + name + '">' + name + '</option>').join("");
   });
 
+  const headerProfileButton = document.getElementById("headerProfileButton");
+  const headerProfileAvatar = document.getElementById("headerProfileAvatar");
+  const headerProfileInitial = document.getElementById("headerProfileInitial");
+  const headerProfileName = document.getElementById("headerProfileName");
+  const profileAvatarPreview = document.getElementById("profileAvatarPreview");
+  const profileAvatarInput = document.getElementById("profileAvatarInput");
+  let currentAvatarUrl = "";
+
+  function setAvatarImages(url, username) {
+    const initial = (username || "J").trim().charAt(0).toUpperCase() || "J";
+    currentAvatarUrl = url || "";
+    headerProfileInitial.textContent = initial;
+    if (url) {
+      headerProfileAvatar.src = url;
+      headerProfileAvatar.hidden = false;
+      headerProfileInitial.hidden = true;
+      profileAvatarPreview.src = url;
+      profileAvatarPreview.hidden = false;
+    } else {
+      headerProfileAvatar.removeAttribute("src");
+      headerProfileAvatar.hidden = true;
+      headerProfileInitial.hidden = false;
+      profileAvatarPreview.removeAttribute("src");
+      profileAvatarPreview.hidden = true;
+    }
+    headerProfileName.textContent = username || "Mon profil";
+  }
+
+  if (headerProfileButton) {
+    headerProfileButton.addEventListener("click", () => {
+      document.getElementById("account").scrollIntoView({ behavior: "smooth" });
+    });
+  }
+  if (profileAvatarInput) {
+    profileAvatarInput.addEventListener("change", () => {
+      const file = profileAvatarInput.files && profileAvatarInput.files[0];
+      if (!file) return;
+      if (!["image/jpeg","image/png","image/webp"].includes(file.type) || file.size > 5 * 1024 * 1024) {
+        setStatus("Choisis une image JPG, PNG ou WebP de 5 Mo maximum.", "error");
+        profileAvatarInput.value = "";
+        return;
+      }
+      const previewUrl = URL.createObjectURL(file);
+      profileAvatarPreview.src = previewUrl;
+      profileAvatarPreview.hidden = false;
+    });
+  }
+
   function setStatus(message, type) {
     accountStatus.textContent = message;
     accountStatus.classList.remove("success","error");
@@ -369,7 +417,7 @@ document.addEventListener("DOMContentLoaded", function () {
   }
   async function showProfile(user) {
     if (!user) { showLoggedOut(); return; }
-    const { data, error } = await client.from("profiles").select("username,favorite_map,favorite_agent").eq("id", user.id).maybeSingle();
+    const { data, error } = await client.from("profiles").select("username,favorite_map,favorite_agent,avatar_url").eq("id", user.id).maybeSingle();
     if (error) {
       setStatus("Connecté, mais le profil n’est pas encore accessible. Vérifie que le script SQL a bien été exécuté dans Supabase.", "error");
       showLoggedOut();
@@ -435,10 +483,29 @@ document.addEventListener("DOMContentLoaded", function () {
       setStatus("Choisis un pseudo de 3 à 20 caractères.", "error"); return;
     }
     setStatus("Enregistrement des modifications…");
+    let avatarUrl = currentAvatarUrl;
+    const avatarFile = profileAvatarInput.files && profileAvatarInput.files[0];
+    if (avatarFile) {
+      setStatus("Envoi de ta photo de profil…");
+      const extension = avatarFile.type === "image/png" ? "png" : avatarFile.type === "image/webp" ? "webp" : "jpg";
+      const avatarPath = userData.user.id + "/" + Date.now() + "." + extension;
+      const { error: uploadError } = await client.storage.from("avatars").upload(avatarPath, avatarFile, {
+        upsert: true,
+        contentType: avatarFile.type,
+        cacheControl: "3600"
+      });
+      if (uploadError) {
+        setStatus("La photo n’a pas pu être envoyée. Vérifie la configuration du stockage Supabase.", "error");
+        return;
+      }
+      const { data: publicData } = client.storage.from("avatars").getPublicUrl(avatarPath);
+      avatarUrl = publicData.publicUrl;
+    }
     const updates = {
       username,
       favorite_map: document.getElementById("profileMap").value,
       favorite_agent: document.getElementById("profileAgent").value,
+      avatar_url: avatarUrl,
       updated_at: new Date().toISOString()
     };
     const { error } = await client.from("profiles").update(updates).eq("id", userData.user.id);
