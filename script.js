@@ -419,6 +419,46 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   }
 
+  const historyList = document.getElementById("playerHistoryList");
+  const refreshHistoryButton = document.getElementById("refreshHistoryButton");
+  let historyUserId = null;
+  let historyBusy = false;
+  function renderHistory(items) {
+    if (!historyList) return;
+    if (!items || !items.length) {
+      historyList.innerHTML = '<p class="history-empty">Aucune activité pour le moment. Consulte une map ou un agent pour commencer ton historique !</p>';
+      return;
+    }
+    historyList.innerHTML = items.map(item => {
+      const label = item.item_type === "map" ? "MAP" : "AGENT";
+      const date = new Date(item.created_at);
+      const dateLabel = date.toLocaleDateString("fr-FR",{day:"2-digit",month:"short"}) + " • " + date.toLocaleTimeString("fr-FR",{hour:"2-digit",minute:"2-digit"});
+      return '<div class="history-row"><span class="history-type">' + label + '</span><strong>' + item.item_name + '</strong><time>' + dateLabel + '</time></div>';
+    }).join("");
+  }
+  async function loadPlayerHistory() {
+    if (!historyUserId || !historyList) return;
+    historyList.innerHTML = '<p class="history-empty">Chargement de ton historique…</p>';
+    const {data,error} = await client.from("player_activity").select("id,item_type,item_name,created_at").eq("user_id",historyUserId).order("created_at",{ascending:false}).limit(12);
+    if (error) { historyList.innerHTML = '<p class="history-empty">Historique indisponible. Vérifie que le nouveau script SQL a bien été exécuté.</p>'; return; }
+    renderHistory(data);
+  }
+  async function recordPlayerActivity(type,name) {
+    if (!historyUserId || !name || historyBusy) return;
+    historyBusy = true;
+    const {error} = await client.from("player_activity").insert({user_id:historyUserId,item_type:type,item_name:name});
+    historyBusy = false;
+    if (!error) loadPlayerHistory();
+  }
+  if (refreshHistoryButton) refreshHistoryButton.addEventListener("click",loadPlayerHistory);
+  const historyMaps=document.getElementById("mapGrid"), historyAgents=document.getElementById("agentGrid");
+  if (historyMaps) historyMaps.addEventListener("click",event=>{const card=event.target.closest(".map-card[data-map]");if(card)recordPlayerActivity("map",card.dataset.map);});
+  if (historyAgents) historyAgents.addEventListener("click",event=>{const card=event.target.closest(".agent-card[data-agent]");if(card)recordPlayerActivity("agent",card.dataset.agent);});
+  const randomPickButton=document.getElementById("randomButton");
+  if (randomPickButton) randomPickButton.addEventListener("click",()=>{const result=document.querySelector("#randomResult .result-agent h3");const mapName=document.getElementById("randomMap").value;if(mapName)recordPlayerActivity("map",mapName);if(result)recordPlayerActivity("agent",result.textContent.trim());});
+  const advisorPickButton=document.getElementById("advisorButton");
+  if (advisorPickButton) advisorPickButton.addEventListener("click",()=>{const result=document.querySelector("#advisorResult .result-agent h3");const mapName=document.getElementById("favoriteMap").value;if(mapName)recordPlayerActivity("map",mapName);if(result)recordPlayerActivity("agent",result.textContent.trim());});
+
   function setStatus(message, type) {
     accountStatus.textContent = message;
     accountStatus.classList.remove("success","error");
@@ -428,6 +468,8 @@ document.addEventListener("DOMContentLoaded", function () {
     authForms.hidden = false;
     profileBox.hidden = true;
     if (headerProfileButton) headerProfileButton.hidden = true;
+    historyUserId = null;
+    if (historyList) historyList.innerHTML = '<p class="history-empty">Connecte-toi pour retrouver ton historique personnel.</p>';
   }
   async function showProfile(user) {
     if (!user) { showLoggedOut(); return; }
@@ -451,6 +493,8 @@ document.addEventListener("DOMContentLoaded", function () {
     document.getElementById("profileShortcutMap").textContent = data.favorite_map || "Non définie";
     document.getElementById("profileShortcutAgent").textContent = data.favorite_agent || "Non défini";
     setAvatarImages(data.avatar_url, data.username);
+    historyUserId = user.id;
+    loadPlayerHistory();
     if (headerProfileButton) headerProfileButton.hidden = false;
     setStatus("Tu es connecté. Ton profil est synchronisé avec ton compte.", "success");
   }
