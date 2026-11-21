@@ -414,6 +414,7 @@ document.addEventListener("DOMContentLoaded", function () {
   function showLoggedOut() {
     authForms.hidden = false;
     profileBox.hidden = true;
+    if (headerProfileButton) headerProfileButton.hidden = true;
   }
   async function showProfile(user) {
     if (!user) { showLoggedOut(); return; }
@@ -434,6 +435,8 @@ document.addEventListener("DOMContentLoaded", function () {
     document.getElementById("profileUsername").value = data.username || "";
     document.getElementById("profileMap").value = data.favorite_map || "";
     document.getElementById("profileAgent").value = data.favorite_agent || "";
+    setAvatarImages(data.avatar_url, data.username);
+    if (headerProfileButton) headerProfileButton.hidden = false;
     setStatus("Tu es connecté. Ton profil est synchronisé avec ton compte.", "success");
   }
 
