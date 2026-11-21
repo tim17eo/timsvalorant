@@ -468,9 +468,16 @@ document.addEventListener("DOMContentLoaded", function () {
     historyUserId = null;
     if (historyList) historyList.innerHTML = '<p class="history-empty">Connecte-toi pour retrouver ton historique personnel.</p>';
   }
+  function withTimeout(promise, ms, message) {
+    return Promise.race([
+      promise,
+      new Promise((_, reject) => setTimeout(() => reject(new Error(message)), ms))
+    ]);
+  }
+
   async function showProfile(user) {
     if (!user) { showLoggedOut(); return; }
-    const { data, error } = await client.from("profiles").select("username,favorite_map,favorite_agent,avatar_url").eq("id", user.id).maybeSingle();
+    const { data, error } = await withTimeout(client.from("profiles").select("username,favorite_map,favorite_agent,avatar_url").eq("id", user.id).maybeSingle(), 10000, "Le chargement du profil prend trop de temps. Vérifie ta connexion puis réessaie.");
     if (error) {
       setStatus("Connecté, mais le profil n’est pas encore accessible. Vérifie que le script SQL a bien été exécuté dans Supabase.", "error");
       showLoggedOut();
@@ -525,12 +532,21 @@ document.addEventListener("DOMContentLoaded", function () {
 
   loginForm.addEventListener("submit", async event => {
     event.preventDefault();
-    setStatus("Connexion en cours…");
+    const submitButton = loginForm.querySelector('button[type="submit"]');
+    if (submitButton) submitButton.disabled = true;
+    setStatus("Connexion à Supabase…");
     const email = document.getElementById("loginEmail").value.trim();
     const password = document.getElementById("loginPassword").value;
-    const { data, error } = await client.auth.signInWithPassword({ email, password });
-    if (error) { setStatus("Connexion impossible : vérifie ton adresse e-mail, ton mot de passe et la confirmation de ton adresse.", "error"); return; }
-    await showProfile(data.user);
+    try {
+      const { data, error } = await withTimeout(client.auth.signInWithPassword({ email, password }), 12000, "La connexion prend trop de temps. Vérifie Internet et réessaie dans quelques instants.");
+      if (error) { setStatus("Connexion impossible : vérifie ton adresse e-mail, ton mot de passe et la confirmation de ton adresse.", "error"); return; }
+      setStatus("Connexion réussie. Chargement du profil…", "success");
+      await showProfile(data.user);
+    } catch (error) {
+      setStatus(error.message || "Une erreur est survenue pendant la connexion. Réessaie.", "error");
+    } finally {
+      if (submitButton) submitButton.disabled = false;
+    }
   });
 
   profileForm.addEventListener("submit", async event => {
