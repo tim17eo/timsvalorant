@@ -85,6 +85,10 @@
     <div class="account-panel account-profile" id="accountProfile" hidden>
       <div class="account-profile-head"><div><span class="account-kicker">ESPACE JOUEUR</span><h3 id="profileWelcome">TON PROFIL</h3></div><button class="account-logout" id="logoutButton" type="button">DÉCONNEXION</button></div>
       <div class="profile-avatar-editor"><img id="profileAvatarPreview" alt="Aperçu de ta photo de profil"><div><label for="profileAvatarInput">PHOTO DE PROFIL</label><input id="profileAvatarInput" type="file" accept="image/png,image/jpeg,image/webp"><p class="account-help">Image JPG, PNG ou WebP • 5 Mo maximum</p></div></div>
+      <div class="player-history">
+        <div class="player-history-heading"><div><span class="account-kicker">TON PARCOURS</span><h4>HISTORIQUE RÉCENT</h4><p>Les dernières maps et les derniers agents que tu as consultés ou choisis.</p></div><button type="button" id="refreshHistoryButton" class="account-logout">ACTUALISER ↻</button></div>
+        <div id="playerHistoryList" class="player-history-list"><p class="history-empty">Chargement de ton historique…</p></div>
+      </div>
       <div class="player-shortcuts">
         <div><span class="account-kicker">TES PRÉFÉRENCES</span><h4>TON SETUP FAVORI</h4><p>Retrouve rapidement ta map et ton agent préférés.</p></div>
         <button type="button" id="profileOpenMap" class="player-shortcut"><span>MAP PRÉFÉRÉE</span><strong id="profileShortcutMap">—</strong><small>OUVRIR LA FICHE ↗</small></button>
