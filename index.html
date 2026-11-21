@@ -7,14 +7,14 @@
 <title>TimsValorant — Ton assistant tactique</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=17">
+<link rel="stylesheet" href="style.css?v=18">
 </head>
 <body>
 <div class="top-line"></div>
 <header class="site-header"><a class="brand" href="?page=home"><span class="brand-mark">TV</span><span>TIMS<span class="brand-light">VALORANT</span></span></a>
 <button class="header-profile" id="headerProfileButton" type="button" hidden aria-label="Ouvrir mon profil"><img id="headerProfileAvatar" alt=""><span class="header-profile-initial" id="headerProfileInitial">J</span></button>
 <button class="menu-toggle" id="menuToggle" aria-label="Ouvrir le menu" aria-expanded="false">☰</button>
-<nav id="mainNav"><a href="?page=home">ACCUEIL</a><a href="?page=maps">MAPS</a><a href="?page=agents">AGENTS</a><a href="?page=duel">DUEL</a><a href="?page=weapons">ARMES</a><a href="?page=skins">SKINS</a><a href="?page=crosshair">VISEUR</a><a href="?page=random">RANDOM</a><a href="?page=advisor">MON AGENT</a><a href="?page=credits">CRÉDITS</a><a href="?page=account" class="account-nav-link">MON COMPTE</a></nav></header>
+<nav id="mainNav"><a href="?page=home">ACCUEIL</a><a href="?page=maps">MAPS</a><a href="?page=agents">AGENTS</a><a href="?page=duel">DUEL</a><a href="?page=weapons">ARMES</a><a href="?page=skins">SKINS</a><a href="?page=team">TEAM</a><a href="?page=crosshair">VISEUR</a><a href="?page=random">RANDOM</a><a href="?page=advisor">MON AGENT</a><a href="?page=credits">CRÉDITS</a><a href="?page=account" class="account-nav-link">MON COMPTE</a></nav></header>
 <main>
 <section class="hero" id="home"><div class="hero-grid"></div><div class="hero-copy"><p class="eyebrow"><span class="status-dot"></span> TON ASSISTANT VALORANT</p><h1>PREPARE<br><span>YOUR</span> GAME.</h1><p class="hero-intro">Trouve un agent adapté à ta map, découvre le roster et prépare ta prochaine partie avec des outils simples.</p><div class="hero-actions"><a class="button button-primary" href="#advisor">TROUVER MON AGENT <span>↘</span></a><a class="text-link" href="#maps">Explorer les maps →</a></div></div>
 <div class="hero-art"><div class="art-ring ring-one"></div><div class="art-ring ring-two"></div><div class="art-slash"></div><div class="art-label">TV<span>/</span></div><div class="art-cross">✳</div><div class="art-caption">MAP • AGENT • STRATEGY</div></div>
@@ -41,7 +41,14 @@
   </div>
 </section>
 
-<section class="section skins-section" id="skins">
+<section class="section team-section" id="team">
+<div class="section-heading"><p class="eyebrow">SQUAD BUILDER / 5 PLAYERS</p><h2>CRÉE TA <span>TEAM</span></h2><p class="section-desc">Compose ton équipe de cinq joueurs, attribue un agent à chacun et vérifie l’équilibre des rôles sur la map choisie.</p></div>
+<div class="team-toolbar"><label><span>MAP DE LA PARTIE</span><select id="teamMap"></select></label><div class="team-actions"><button class="button button-primary" id="teamSuggest" type="button">COMPOSITION CONSEILLÉE ✦</button><button class="button button-secondary" id="teamReset" type="button">RÉINITIALISER</button></div></div>
+<div class="team-roster" id="teamRoster"></div>
+<div class="team-analysis"><div class="team-analysis-head"><div><span class="eyebrow">TEAM CHECK</span><h3>ANALYSE DE TA <span>COMPOSITION</span></h3></div><strong id="teamScore">0/5</strong></div><div class="team-role-grid" id="teamRoleGrid"></div><p id="teamAdvice" aria-live="polite">Choisis tes cinq agents pour analyser ta composition.</p></div>
+<div class="team-share-row"><button class="button button-primary" id="teamCopy" type="button">COPIER MA TEAM</button><span id="teamStatus" role="status">Ta composition reste modifiable à tout moment.</span></div>
+<p class="data-note">Les compositions conseillées sont des suggestions éditoriales TimsValorant, pas des compositions officielles ni une garantie de victoire. Discutez avec ton équipe pour adapter les choix.</p>
+</section>\n<section class="section skins-section" id="skins">
 <div class="section-heading"><p class="eyebrow">COLLECTION / COSMETICS</p><h2>SKINS <span>VALORANT</span></h2><p class="section-desc">Explore les skins d’armes, recherche tes collections préférées et découvre leurs variantes visuelles.</p></div>
 <div class="skins-toolbar">
   <label class="skins-search"><span>RECHERCHER UN SKIN</span><input id="skinSearch" type="search" placeholder="Ex. Prime, Vandal, Reaver…"></label>
@@ -135,11 +142,11 @@
 </main>
 <footer><a class="brand footer-brand" href="?page=home"><span class="brand-mark">TV</span><span>TIMS<span class="brand-light">VALORANT</span></span></a><p>FAN-MADE WEBSITE • NON AFFILIÉ À RIOT GAMES</p><div class="footer-qr"><img src="assets/timsvalorant-qr.svg" alt="QR code TimsValorant"><span>SCANNER POUR VISITER TIMSVALORANT</span></div><a href="?page=home" class="back-top">ACCUEIL ↑</a></footer>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="script.js?v=16"></script>
+<script src="script.js?v=17"></script>
 <script>
 document.addEventListener("DOMContentLoaded",function(){
- const pageMap={home:["home"],maps:["maps"],agents:["agents"],duel:["agentCompare"],weapons:["weapons"],crosshair:["crosshair"],skins:["skins"],random:["random"],advisor:["advisor"],credits:["credits"],account:["account"]};
- const titles={home:"Accueil",maps:"Maps",agents:"Agents",duel:"Duel d’agents",weapons:"Armes",crosshair:"Générateur de viseur",skins:"Skins",random:"Agent random",advisor:"Mon agent",credits:"Crédits",account:"Mon compte"};
+ const pageMap={home:["home"],maps:["maps"],agents:["agents"],duel:["agentCompare"],weapons:["weapons"],crosshair:["crosshair"],skins:["skins"],team:["team"],random:["random"],advisor:["advisor"],credits:["credits"],account:["account"]};
+ const titles={home:"Accueil",maps:"Maps",agents:"Agents",duel:"Duel d’agents",weapons:"Armes",crosshair:"Générateur de viseur",skins:"Skins",team:"Team",random:"Agent random",advisor:"Mon agent",credits:"Crédits",account:"Mon compte"};
  const sections=Array.from(document.querySelectorAll("main > section"));
  function pageFromHash(hash){const id=(hash||"").replace("#","");if(!id)return "home";for(const [page,ids] of Object.entries(pageMap)){if(ids.includes(id))return page;}return "home";}
  function showPage(page,update){
