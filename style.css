@@ -152,3 +152,28 @@ body.modal-open{overflow:hidden}
 .agent-match-verdict h3{font:800 25px var(--display);margin:8px 0}
 .agent-match-verdict p{font-size:11px;line-height:1.8;color:var(--muted);margin:0}
 @media(max-width:650px){.agent-compare-card{padding:18px 13px}.agent-compare-form{grid-template-columns:1fr 28px 1fr;gap:7px}.agent-match-grid{grid-template-columns:1fr 28px 1fr;gap:6px}.agent-match-card{padding:12px 8px}.agent-match-image{height:100px}.agent-match-image img{max-height:95px}.agent-match-card h3{font-size:25px}.agent-match-card p{font-size:9px}.agent-match-score strong{font-size:23px}.agent-match-badge{font-size:7px;padding:6px 5px}.agent-match-map{height:140px}.agent-match-map h3{font-size:34px}}
+
+
+/* Espace compte joueur */
+.account-section{background:#111216}
+.account-shell{max-width:980px;margin:0 auto;padding:28px;background:linear-gradient(145deg,#1c1f27,#14161b);border:1px solid var(--line)}
+.account-status{padding:13px 16px;margin-bottom:20px;background:#101216;border-left:3px solid var(--red);font-size:11px;line-height:1.6;color:#d5d6dc}
+.account-status.success{border-left-color:#5ce0a0}
+.account-status.error{border-left-color:#ff7782}
+.account-auth-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.account-panel{padding:24px;background:#20232b;border:1px solid var(--line);display:flex;flex-direction:column;gap:10px}
+.account-panel[hidden]{display:none!important}
+.account-kicker{font-size:9px;letter-spacing:1.5px;color:#ff7782;font-weight:700}
+.account-panel h3{font:900 29px var(--display);margin:0 0 10px}
+.account-panel label,.profile-form label{font-size:9px;letter-spacing:1px;color:#aeb0b8;font-weight:700;text-transform:uppercase;margin-top:5px}
+.account-panel input,.account-panel select{min-height:43px}
+.account-panel .button{margin-top:12px}
+.account-help,.account-privacy{font-size:10px;line-height:1.7;color:var(--muted)}
+.account-privacy{margin:20px 0 0}
+.account-profile-head{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:20px}
+.account-logout{padding:10px 13px;background:#101216;border:1px solid var(--line);color:#ff8992;font-size:9px;font-weight:700;letter-spacing:1px;cursor:pointer}
+.profile-form{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.profile-form label{align-self:end}
+.profile-form input,.profile-form select{grid-column:span 1}
+.profile-form .button{grid-column:1/-1;margin-top:10px}
+@media(max-width:700px){.account-shell{padding:17px}.account-auth-grid{grid-template-columns:1fr}.account-panel{padding:19px}.profile-form{grid-template-columns:1fr}.profile-form .button{grid-column:auto}.account-profile-head{align-items:flex-start;flex-direction:column}}
