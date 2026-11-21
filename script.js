@@ -21,9 +21,10 @@ document.addEventListener("DOMContentLoaded", function () {
     {name:"Sunset",active:true,sites:"2 sites • contrôle du mid",agents:["Raze","Omen","Fade","Cypher","Breach"]}
   ];
   const $ = id => document.getElementById(id);
-  const mapGrid=$("mapGrid"), agentGrid=$("agentGrid");
+  const mapGrid=$("mapGrid"), agentGrid=$("agentGrid"), weaponGrid=$("weaponGrid");
   let agentDetails=[];
   let mapDetails=[];
+  let weaponDetails=[];
   const detailByName=name=>agentDetails.find(a=>a.displayName.toLowerCase()===name.toLowerCase());
   const mapDetailByName=name=>mapDetails.find(m=>m.displayName.toLowerCase()===name.toLowerCase());
   const randomMap=$("randomMap"), favoriteMap=$("favoriteMap");
@@ -35,6 +36,24 @@ document.addEventListener("DOMContentLoaded", function () {
   randomMap.innerHTML=maps.map(option).join("");
   favoriteMap.innerHTML=maps.map(option).join("");
   mapGrid.innerHTML=maps.map(m=>'<article class="map-card" data-map="'+m.name+'" role="button" tabindex="0" aria-label="Voir la fiche de '+m.name+'"><span class="map-status '+(m.active?'':'off')+'">'+(m.active?'● EN CLASSÉ':'○ HORS ROTATION')+'</span><h3>'+m.name+'</h3><p>'+m.sites+'</p><span class="map-card-hint">VOIR LA MAP ↗</span></article>').join("");
+  const weaponFilters=$("weaponFilters");
+  const weaponCategory=w=>{
+    const c=(w.category||"").toLowerCase();
+    if(c.includes("sidearm"))return "Sidearm";
+    if(c.includes("smg"))return "SMG";
+    if(c.includes("shotgun"))return "Shotgun";
+    if(c.includes("sniper"))return "Sniper";
+    if(c.includes("heavy"))return "Heavy";
+    if(c.includes("melee"))return "Melee";
+    if(c.includes("rifle"))return "Rifle";
+    return "Other";
+  };
+  const weaponCategoryLabel=c=>({Sidearm:"PISTOLET",SMG:"PM",Shotgun:"FUSIL À POMPE",Rifle:"FUSIL",Sniper:"SNIPER",Heavy:"MITRAILLEUSE",Melee:"CORPS À CORPS",Other:"ARME"})[c]||"ARME";
+  function renderWeapons(category){
+    if(!weaponGrid)return;
+    const items=weaponDetails.filter(w=>category==="Tous"||weaponCategory(w)===category);
+    weaponGrid.innerHTML=items.map(w=>'<article class="weapon-card" data-weapon="'+w.uuid+'" role="button" tabindex="0" aria-label="Voir les statistiques de '+w.displayName+'"><h3>'+w.displayName+'</h3><p>'+weaponCategoryLabel(weaponCategory(w))+' <span>• '+(w.shopData&&w.shopData.cost!=null?w.shopData.cost.toLocaleString("fr-FR")+" crédits":"Prix variable")+'</span></p></article>').join("");
+  }
   function renderAgents(role) {
     agentGrid.innerHTML=agents.filter(a=>role==="Tous"||a.role===role).map(a=>
       '<article class="agent-card" data-agent="'+a.name+'" role="button" tabindex="0" aria-label="Voir la fiche de '+a.name+'"><h3>'+a.name+'</h3><p>'+a.role+'</p></article>'
@@ -48,6 +67,10 @@ document.addEventListener("DOMContentLoaded", function () {
     .then(r=>{if(!r.ok)throw new Error("API maps indisponible");return r.json();})
     .then(data=>{mapDetails=data.data||[];})
     .catch(err=>console.warn("Images des maps indisponibles",err));
+  const weaponDataPromise=fetch("https://valorant-api.com/v1/weapons?language=fr-FR")
+    .then(r=>{if(!r.ok)throw new Error("API armes indisponible");return r.json();})
+    .then(data=>{weaponDetails=(data.data||[]).filter(w=>w.displayName&&w.displayIcon);renderWeapons("Tous");})
+    .catch(err=>{console.warn("Données des armes indisponibles",err);if(weaponGrid)weaponGrid.innerHTML='<p class="data-note">Impossible de charger les armes pour le moment. Réessaie dans quelques instants.</p>';});
   const agentModal=document.createElement("div");
   agentModal.className="agent-modal";
   agentModal.innerHTML='<div class="agent-modal-backdrop" data-close-agent></div><section class="agent-modal-box" role="dialog" aria-modal="true"><button class="agent-modal-close" type="button" aria-label="Fermer" data-close-agent>×</button><div class="agent-modal-visual"><img id="agentModalImage" alt=""></div><div class="agent-modal-info"><span class="result-kicker" id="agentModalRole"></span><h2 id="agentModalName"></h2><p id="agentModalDescription"></p><h3>COMPÉTENCES</h3><div id="agentModalAbilities" class="agent-abilities"></div></div></section>';
@@ -67,7 +90,7 @@ document.addEventListener("DOMContentLoaded", function () {
   agentGrid.addEventListener("click",e=>{const card=e.target.closest("[data-agent]");if(card)openAgent(card.dataset.agent);});
   agentGrid.addEventListener("keydown",e=>{const card=e.target.closest("[data-agent]");if(card&&(e.key==="Enter"||e.key===" ")){e.preventDefault();openAgent(card.dataset.agent);}});
   agentModal.addEventListener("click",e=>{if(e.target.closest("[data-close-agent]"))closeAgent();});
-  document.addEventListener("keydown",e=>{if(e.key==="Escape"){closeAgent();closeMap();}});
+  document.addEventListener("keydown",e=>{if(e.key==="Escape"){closeAgent();closeMap();closeWeapon();}});
   const mapModal=document.createElement("div");
   mapModal.className="map-modal";
   mapModal.innerHTML='<div class="map-modal-backdrop" data-close-map></div><section class="map-modal-box" role="dialog" aria-modal="true"><button class="map-modal-close" type="button" aria-label="Fermer" data-close-map>×</button><div class="map-modal-hero"><img id="mapModalImage" alt=""><div class="map-modal-shade"></div><div class="map-modal-title"><span class="result-kicker" id="mapModalStatus"></span><h2 id="mapModalName"></h2><p id="mapModalSites"></p></div></div><div class="map-modal-content"><div><h3>À CONNAÎTRE SUR CETTE MAP</h3><p id="mapModalDescription"></p></div><div><h3>AGENTS RECOMMANDÉS</h3><p class="map-modal-note">Une sélection indicative selon la configuration de la map. Clique sur un agent pour découvrir sa fiche.</p><div id="mapModalAgents" class="map-agent-list"></div></div></div></section>';
@@ -97,6 +120,35 @@ document.addEventListener("DOMContentLoaded", function () {
     const agentButton=e.target.closest("[data-map-agent]");
     if(agentButton){closeMap();openAgent(agentButton.dataset.mapAgent);}
   });
+  const weaponModal=document.createElement("div");
+  weaponModal.className="weapon-modal";
+  weaponModal.innerHTML='<div class="weapon-modal-backdrop" data-close-weapon></div><section class="weapon-modal-box" role="dialog" aria-modal="true"><button class="weapon-modal-close" type="button" aria-label="Fermer" data-close-weapon>×</button><div class="weapon-modal-visual"><img id="weaponModalImage" alt=""></div><div class="weapon-modal-info"><span class="result-kicker" id="weaponModalCategory"></span><h2 id="weaponModalName"></h2><p id="weaponModalDescription"></p><div class="weapon-stats" id="weaponModalStats"></div><h3>DÉGÂTS PAR DISTANCE</h3><div id="weaponModalDamage" class="weapon-damage"></div></div></section>';
+  document.body.appendChild(weaponModal);
+  async function openWeapon(uuid){
+    await weaponDataPromise;
+    const w=weaponDetails.find(item=>item.uuid===uuid);if(!w)return;
+    const category=weaponCategory(w), stats=w.weaponStats||{}, shop=w.shopData||{};
+    $("weaponModalName").textContent=w.displayName;
+    $("weaponModalCategory").textContent=weaponCategoryLabel(category)+" • "+(shop.cost!=null?shop.cost.toLocaleString("fr-FR")+" CRÉDITS":"PRIX VARIABLE");
+    const descriptions={Sidearm:"Arme de poing adaptée aux manches économiques et aux situations de secours.",SMG:"Arme automatique compacte, efficace à courte portée.",Shotgun:"Arme conçue pour les engagements rapprochés.",Rifle:"Arme polyvalente pour les duels à moyenne et longue portée.",Sniper:"Arme de précision pensée pour les tirs à longue distance.",Heavy:"Arme lourde offrant une forte capacité de tir.",Melee:"Arme de corps à corps."};
+    $("weaponModalDescription").textContent=descriptions[category]||"Découvre les caractéristiques de cette arme dans l'arsenal VALORANT.";
+    const img=$("weaponModalImage");img.src=w.displayIcon||"";img.alt="Visuel de "+w.displayName;
+    const statItems=[["Chargeur",stats.magazineSize!=null?stats.magazineSize+" balles":"—"],["Cadence",stats.fireRate!=null?stats.fireRate+" tirs/s":"—"],["Rechargement",stats.reloadTimeSeconds!=null?stats.reloadTimeSeconds+" s":"—"],["Pénétration",stats.wallPenetration?stats.wallPenetration.replace("EWallPenetration::",""):"—"]];
+    $("weaponModalStats").innerHTML=statItems.map(s=>'<div><span>'+s[0]+'</span><strong>'+s[1]+'</strong></div>').join("");
+    const ranges=stats.damageRanges||[];
+    $("weaponModalDamage").innerHTML=ranges.length?ranges.map(r=>'<div class="weapon-damage-row"><strong>'+r.rangeStartMeters+'–'+r.rangeEndMeters+' m</strong><span>Tête : '+(r.headDamage??"—")+'</span><span>Corps : '+(r.bodyDamage??"—")+'</span><span>Jambes : '+(r.legDamage??"—")+'</span></div>').join(""):'<p class="data-note">Données de dégâts non disponibles pour cette arme.</p>';
+    weaponModal.classList.add("visible");document.body.classList.add("modal-open");
+  }
+  function closeWeapon(){weaponModal.classList.remove("visible");if(!agentModal.classList.contains("visible")&&!mapModal.classList.contains("visible"))document.body.classList.remove("modal-open");}
+  if(weaponGrid){
+    weaponGrid.addEventListener("click",e=>{const card=e.target.closest("[data-weapon]");if(card)openWeapon(card.dataset.weapon);});
+    weaponGrid.addEventListener("keydown",e=>{const card=e.target.closest("[data-weapon]");if(card&&(e.key==="Enter"||e.key===" ")){e.preventDefault();openWeapon(card.dataset.weapon);}});
+  }
+  weaponModal.addEventListener("click",e=>{if(e.target.closest("[data-close-weapon]"))closeWeapon();});
+  if(weaponFilters)weaponFilters.querySelectorAll("[data-weapon-category]").forEach(btn=>btn.addEventListener("click",()=>{
+    weaponFilters.querySelectorAll(".filter-btn").forEach(b=>b.classList.remove("selected"));
+    btn.classList.add("selected");renderWeapons(btn.dataset.weaponCategory);
+  }));
   renderAgents("Tous");
   document.querySelectorAll(".filter-btn").forEach(btn=>btn.addEventListener("click",function(){
     document.querySelectorAll(".filter-btn").forEach(b=>b.classList.remove("selected"));
