@@ -166,16 +166,15 @@ document.addEventListener("DOMContentLoaded", function () {
   fillAgentCompare();
   const agentCompareButton=$("agentCompareButton");
   if(agentCompareButton)agentCompareButton.addEventListener("click",renderAgentCompare);
-  const agentDataPromise=fetch("https://valorant-api.com/v1/agents?isPlayableCharacter=true&language=fr-FR")
-    .then(r=>{if(!r.ok)throw new Error("API agents indisponible");return r.json();})
-    .then(data=>{agentDetails=data.data||[];const active=document.querySelector(".filter-btn.selected");renderAgents(active?active.dataset.role:"Tous");})
-    .catch(err=>console.warn("Fiches agents indisponibles",err));
-  agentDataPromise.then(()=>{if(agentCompareResult)renderAgentCompare();});
-  mapDataPromise.then(()=>{if(agentCompareResult)renderAgentCompare();});
   const mapDataPromise=fetch("https://valorant-api.com/v1/maps?language=fr-FR")
     .then(r=>{if(!r.ok)throw new Error("API maps indisponible");return r.json();})
     .then(data=>{mapDetails=data.data||[];})
     .catch(err=>console.warn("Images des maps indisponibles",err));
+  const agentDataPromise=fetch("https://valorant-api.com/v1/agents?isPlayableCharacter=true&language=fr-FR")
+    .then(r=>{if(!r.ok)throw new Error("API agents indisponible");return r.json();})
+    .then(data=>{agentDetails=data.data||[];const active=document.querySelector(".filter-btn.selected");renderAgents(active?active.dataset.role:"Tous");})
+    .catch(err=>console.warn("Fiches agents indisponibles",err));
+  Promise.all([agentDataPromise,mapDataPromise]).then(()=>{if(agentCompareResult)renderAgentCompare();});
   const weaponDataPromise=fetch("https://valorant-api.com/v1/weapons?language=fr-FR")
     .then(r=>{if(!r.ok)throw new Error("API armes indisponible");return r.json();})
     .then(data=>{weaponDetails=(data.data||[]).filter(w=>w.displayName&&w.displayIcon);renderWeapons("Tous");populateCompareSelects();})
