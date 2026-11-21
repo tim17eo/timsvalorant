@@ -54,6 +54,52 @@ document.addEventListener("DOMContentLoaded", function () {
     const items=weaponDetails.filter(w=>category==="Tous"||weaponCategory(w)===category);
     weaponGrid.innerHTML=items.map(w=>'<article class="weapon-card" data-weapon="'+w.uuid+'" role="button" tabindex="0" aria-label="Voir les statistiques de '+w.displayName+'"><h3>'+w.displayName+'</h3><p>'+weaponCategoryLabel(weaponCategory(w))+' <span>• '+(w.shopData&&w.shopData.cost!=null?w.shopData.cost.toLocaleString("fr-FR")+" crédits":"Prix variable")+'</span></p></article>').join("");
   }
+  const compareSelectA=$("compareWeaponA"),compareSelectB=$("compareWeaponB"),compareResult=$("compareResult");
+  function populateCompareSelects(){
+    if(!compareSelectA||!compareSelectB)return;
+    const options=weaponDetails.filter(w=>w.weaponStats).map(w=>'<option value="'+w.uuid+'">'+w.displayName+'</option>').join("");
+    compareSelectA.innerHTML=options;compareSelectB.innerHTML=options;
+    const first=weaponDetails.find(w=>w.displayName==="Vandal")||weaponDetails[0];
+    const second=weaponDetails.find(w=>w.displayName==="Phantom")||weaponDetails[1];
+    if(first)compareSelectA.value=first.uuid;
+    if(second)compareSelectB.value=second.uuid;
+  }
+  function compareStat(w,key){
+    const s=w.weaponStats||{},shop=w.shopData||{};
+    if(key==="cost")return shop.cost??null;
+    if(key==="magazine")return s.magazineSize??null;
+    if(key==="fireRate")return s.fireRate??null;
+    if(key==="reload")return s.reloadTimeSeconds??null;
+    if(key==="equip")return s.equipTimeSeconds??null;
+    if(key==="run")return s.runSpeedMultiplier??null;
+    if(key==="wall")return s.wallPenetration||null;
+    return null;
+  }
+  function formatCompare(value,key){
+    if(value===null||value===undefined||value==="")return "—";
+    if(key==="cost")return Number(value).toLocaleString("fr-FR")+" crédits";
+    if(key==="magazine")return value+" balles";
+    if(key==="fireRate")return value+" tirs/s";
+    if(key==="reload"||key==="equip")return value+" s";
+    if(key==="run")return value+"×";
+    return String(value).replace("EWallPenetration::","");
+  }
+  function renderCompare(){
+    if(!compareSelectA||!compareSelectB||!compareResult)return;
+    const a=weaponDetails.find(w=>w.uuid===compareSelectA.value),b=weaponDetails.find(w=>w.uuid===compareSelectB.value);
+    if(!a||!b){compareResult.innerHTML="<p>Les données des armes ne sont pas disponibles.</p>";return;}
+    if(a.uuid===b.uuid){compareResult.innerHTML='<p class="compare-warning">Choisis deux armes différentes pour les comparer.</p>';return;}
+    const rows=[["Prix","cost","low"],["Chargeur","magazine","high"],["Cadence de tir","fireRate","high"],["Temps de rechargement","reload","low"],["Temps d’équipement","equip","low"],["Vitesse de déplacement","run","high"],["Pénétration","wall","neutral"]];
+    const rowHtml=rows.map(([label,key,best])=>{
+      const av=compareStat(a,key),bv=compareStat(b,key);
+      let aw="",bw="";
+      if(best!=="neutral"&&typeof av==="number"&&typeof bv==="number"&&av!==bv){aw=(best==="high"?av>bv:av<bv)?"compare-better":"";bw=(best==="high"?bv>av:bv<av)?"compare-better":"";}
+      return '<div class="compare-stat-row"><span class="compare-stat-label">'+label+'</span><strong class="'+aw+'">'+formatCompare(av,key)+'</strong><strong class="'+bw+'">'+formatCompare(bv,key)+'</strong></div>';
+    }).join("");
+    compareResult.innerHTML='<div class="compare-weapons"><div class="compare-weapon"><img src="'+a.displayIcon+'" alt=""><h4>'+a.displayName+'</h4><span>'+weaponCategoryLabel(weaponCategory(a))+'</span></div><div class="compare-vs large">VS</div><div class="compare-weapon"><img src="'+b.displayIcon+'" alt=""><h4>'+b.displayName+'</h4><span>'+weaponCategoryLabel(weaponCategory(b))+'</span></div></div><div class="compare-table"><div class="compare-table-head"><span>STATISTIQUE</span><strong>'+a.displayName+'</strong><strong>'+b.displayName+'</strong></div>'+rowHtml+'</div><p class="compare-legend"><i></i> Valeur la plus avantageuse selon la statistique (en vert).</p>';
+  }
+  const compareButton=$("compareButton");
+  if(compareButton)compareButton.addEventListener("click",renderCompare);
   function renderAgents(role) {
     agentGrid.innerHTML=agents.filter(a=>role==="Tous"||a.role===role).map(a=>
       '<article class="agent-card" data-agent="'+a.name+'" role="button" tabindex="0" aria-label="Voir la fiche de '+a.name+'"><h3>'+a.name+'</h3><p>'+a.role+'</p></article>'
@@ -69,7 +115,7 @@ document.addEventListener("DOMContentLoaded", function () {
     .catch(err=>console.warn("Images des maps indisponibles",err));
   const weaponDataPromise=fetch("https://valorant-api.com/v1/weapons?language=fr-FR")
     .then(r=>{if(!r.ok)throw new Error("API armes indisponible");return r.json();})
-    .then(data=>{weaponDetails=(data.data||[]).filter(w=>w.displayName&&w.displayIcon);renderWeapons("Tous");})
+    .then(data=>{weaponDetails=(data.data||[]).filter(w=>w.displayName&&w.displayIcon);renderWeapons("Tous");populateCompareSelects();})
     .catch(err=>{console.warn("Données des armes indisponibles",err);if(weaponGrid)weaponGrid.innerHTML='<p class="data-note">Impossible de charger les armes pour le moment. Réessaie dans quelques instants.</p>';});
   const agentModal=document.createElement("div");
   agentModal.className="agent-modal";
@@ -150,9 +196,10 @@ document.addEventListener("DOMContentLoaded", function () {
     btn.classList.add("selected");renderWeapons(btn.dataset.weaponCategory);
   }));
   renderAgents("Tous");
-  document.querySelectorAll(".filter-btn").forEach(btn=>btn.addEventListener("click",function(){
-    document.querySelectorAll(".filter-btn").forEach(b=>b.classList.remove("selected"));
-    btn.classList.add("selected"); renderAgents(btn.dataset.role);
+  const agentFilters=$("agentFilters");
+  if(agentFilters)agentFilters.querySelectorAll(".filter-btn").forEach(btn=>btn.addEventListener("click",function(){
+    agentFilters.querySelectorAll(".filter-btn").forEach(b=>b.classList.remove("selected"));
+    btn.classList.add("selected");renderAgents(btn.dataset.role);
   }));
   function showAgent(target,agent,kicker,description) {
     target.innerHTML='<div class="result-agent"><span class="result-kicker">'+kicker+'</span><h3>'+agent.name+'</h3><span class="role-pill">'+agent.role.toUpperCase()+'</span><p>'+description+'</p></div>';
