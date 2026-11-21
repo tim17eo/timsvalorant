@@ -7,13 +7,13 @@
 <title>TimsValorant — Ton assistant tactique</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=3">
+<link rel="stylesheet" href="style.css?v=4">
 </head>
 <body>
 <div class="top-line"></div>
 <header class="site-header"><a class="brand" href="#home"><span class="brand-mark">TV</span><span>TIMS<span class="brand-light">VALORANT</span></span></a>
 <button class="menu-toggle" id="menuToggle" aria-label="Ouvrir le menu" aria-expanded="false">☰</button>
-<nav id="mainNav"><a href="#maps">MAPS</a><a href="#agents">AGENTS</a><a href="#random">AGENT RANDOM</a><a href="#advisor">MON AGENT</a><a href="#credits">CRÉDITS</a></nav></header>
+<nav id="mainNav"><a href="#maps">MAPS</a><a href="#agents">AGENTS</a><a href="#weapons">ARMES</a><a href="#random">AGENT RANDOM</a><a href="#advisor">MON AGENT</a><a href="#credits">CRÉDITS</a></nav></header>
 <main>
 <section class="hero" id="home"><div class="hero-grid"></div><div class="hero-copy"><p class="eyebrow"><span class="status-dot"></span> TON ASSISTANT VALORANT</p><h1>PREPARE<br><span>YOUR</span> GAME.</h1><p class="hero-intro">Trouve un agent adapté à ta map, découvre le roster et prépare ta prochaine partie avec des outils simples.</p><div class="hero-actions"><a class="button button-primary" href="#advisor">TROUVER MON AGENT <span>↘</span></a><a class="text-link" href="#maps">Explorer les maps →</a></div></div>
 <div class="hero-art"><div class="art-ring ring-one"></div><div class="art-ring ring-two"></div><div class="art-slash"></div><div class="art-label">TV<span>/</span></div><div class="art-cross">✳</div><div class="art-caption">MAP • AGENT • STRATEGY</div></div>
@@ -25,6 +25,8 @@
 <section class="section agents-section" id="agents"><div class="section-heading"><p class="eyebrow">02 / AGENT DATABASE</p><h2>CHOISIS TON <span>AGENT</span></h2><p class="section-desc">Les agents disponibles, regroupés par rôle.</p></div>
 <div class="filter-row" id="agentFilters"><button class="filter-btn selected" data-role="Tous">Tous</button><button class="filter-btn" data-role="Duelliste">Duellistes</button><button class="filter-btn" data-role="Initiateur">Initiateurs</button><button class="filter-btn" data-role="Contrôleur">Contrôleurs</button><button class="filter-btn" data-role="Sentinelle">Sentinelles</button></div><div class="agent-grid" id="agentGrid"></div></section>
 
+<section class="section weapons-section" id="weapons"><div class="section-heading"><p class="eyebrow">03 / WEAPON DATABASE</p><h2>ARSENAL <span>VALORANT</span></h2><p class="section-desc">Découvre les armes du jeu. Clique sur une carte pour afficher son visuel et ses statistiques.</p></div><div class="filter-row" id="weaponFilters"><button class="filter-btn selected" data-weapon-category="Tous">Toutes</button><button class="filter-btn" data-weapon-category="Sidearm">Pistolets</button><button class="filter-btn" data-weapon-category="SMG">PM</button><button class="filter-btn" data-weapon-category="Shotgun">Fusils à pompe</button><button class="filter-btn" data-weapon-category="Rifle">Fusils</button><button class="filter-btn" data-weapon-category="Sniper">Snipers</button><button class="filter-btn" data-weapon-category="Heavy">Mitrailleuses</button><button class="filter-btn" data-weapon-category="Melee">Mêlée</button></div><div class="weapon-grid" id="weaponGrid"></div><p class="data-note">Les statistiques affichées proviennent des données publiques de l’API Valorant. Elles peuvent évoluer avec les mises à jour du jeu.</p></section>
+
 <section class="section tool-section" id="random"><div class="section-heading"><p class="eyebrow">03 / QUICK PICK</p><h2>AGENT <span>ALÉATOIRE</span></h2><p class="section-desc">Choisis ta map et laisse le hasard sélectionner un agent adapté.</p></div>
 <div class="tool-card"><div class="tool-form"><label for="randomMap">Ta map</label><select id="randomMap"></select><button class="button button-primary" id="randomButton">GÉNÉRER UN AGENT <span>✦</span></button></div><div class="result-panel" id="randomResult" aria-live="polite"><div class="result-placeholder"><span>?</span><p>Ton agent apparaîtra ici.</p></div></div></div></section>
 
@@ -35,5 +37,5 @@
 <div class="tool-card credit-card"><div class="credit-form"><div class="field"><label for="creditsInput">Tes crédits disponibles</label><input id="creditsInput" type="number" min="0" max="9000" step="50" value="3900"></div><div class="field"><label for="shieldSelect">Budget protections</label><select id="shieldSelect"><option value="0">Aucune — 0 crédits</option><option value="400">Protection légère — 400</option><option value="650">Protection régénérante — 650</option><option value="1000" selected>Protection lourde — 1 000</option></select></div><div class="field"><label for="abilityInput">Budget compétences</label><input id="abilityInput" type="number" min="0" max="9000" step="50" value="400"></div><button class="button button-primary" id="budgetButton">CALCULER MON BUDGET <span>↗</span></button></div><div class="budget-result" id="budgetResult" aria-live="polite"><span>CRÉDITS RESTANTS</span><strong>2 500</strong><p>Après les protections et les compétences prévues.</p></div><p class="data-note">Outil de suivi de budget uniquement. Les prix et achats disponibles peuvent varier : vérifie toujours la boutique en jeu.</p></div></section>
 </main>
 <footer><a class="brand footer-brand" href="#home"><span class="brand-mark">TV</span><span>TIMS<span class="brand-light">VALORANT</span></span></a><p>FAN-MADE WEBSITE • NON AFFILIÉ À RIOT GAMES</p><a href="#home" class="back-top">RETOUR EN HAUT ↑</a></footer>
-<script src="script.js?v=5"></script>
+<script src="script.js?v=6"></script>
 </body></html>
