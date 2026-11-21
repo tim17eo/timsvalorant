@@ -347,3 +347,26 @@ main>section[hidden]{display:none!important}
 @media(max-width:1000px){.team-roster{grid-template-columns:repeat(3,minmax(0,1fr))}}
 @media(max-width:650px){.team-toolbar{align-items:stretch;flex-direction:column}.team-toolbar>label{width:100%}.team-actions{display:grid;grid-template-columns:1fr}.team-roster{grid-template-columns:repeat(2,minmax(0,1fr))}.team-role-grid{grid-template-columns:repeat(2,1fr)}.team-analysis{padding:17px}.team-player{padding:12px}}
 @media(max-width:420px){.team-roster{grid-template-columns:1fr}}
+
+/* Stratégies par map */
+.strategies-section{background:#111216}
+.strategy-toolbar{display:flex;align-items:end;justify-content:space-between;gap:18px;margin:25px 0}
+.strategy-toolbar>label{display:flex;flex-direction:column;gap:8px;width:min(330px,100%)}
+.strategy-toolbar label span,.strategy-agents>.eyebrow{font-size:9px;font-weight:800;letter-spacing:1.2px;color:var(--muted)}
+.strategy-toolbar select{background:#20232b;border:1px solid var(--line);color:var(--text);padding:13px;min-height:46px}
+.strategy-tabs{display:flex;gap:8px}
+.strategy-tab{padding:12px 18px;border:1px solid var(--line);background:#20232b;color:var(--muted);font-size:10px;font-weight:800;letter-spacing:1px;cursor:pointer}
+.strategy-tab.active{background:var(--red);border-color:var(--red);color:#fff}
+.strategy-map-banner{padding:24px;margin-bottom:14px;background:linear-gradient(110deg,rgba(255,70,85,.17),transparent 70%),#1b1e25;border:1px solid var(--line)}
+.strategy-map-banner h3{font:900 38px var(--display);margin:7px 0}
+.strategy-map-banner p{font-size:11px;line-height:1.7;color:var(--muted);margin:0}
+.strategy-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.strategy-card{padding:20px;background:#20232b;border:1px solid var(--line);min-width:0}
+.strategy-card>span{font-size:8px;font-weight:800;letter-spacing:1.1px;color:#ff7782}
+.strategy-card h3{font:800 23px var(--display);margin:10px 0}
+.strategy-card p{font-size:11px;line-height:1.75;color:#c1c3ca;margin:0}
+.strategy-agents{margin-top:16px;padding:19px;background:#191b21;border:1px solid var(--line)}
+.strategy-agents>div{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.strategy-agents>div span{padding:8px 12px;background:#292c35;border:1px solid var(--line);font-size:10px;font-weight:700}
+.team-toolbar>label:first-child input{background:#101114;border:1px solid #383b45;color:var(--text);padding:12px;min-height:44px;width:100%}
+@media(max-width:760px){.strategy-toolbar{align-items:stretch;flex-direction:column}.strategy-toolbar>label{width:100%}.strategy-grid{grid-template-columns:1fr}.strategy-map-banner{padding:18px}.team-toolbar>label:first-child{width:100%}}
