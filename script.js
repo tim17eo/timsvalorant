@@ -23,7 +23,9 @@ document.addEventListener("DOMContentLoaded", function () {
   const $ = id => document.getElementById(id);
   const mapGrid=$("mapGrid"), agentGrid=$("agentGrid");
   let agentDetails=[];
+  let mapDetails=[];
   const detailByName=name=>agentDetails.find(a=>a.displayName.toLowerCase()===name.toLowerCase());
+  const mapDetailByName=name=>mapDetails.find(m=>m.displayName.toLowerCase()===name.toLowerCase());
   const randomMap=$("randomMap"), favoriteMap=$("favoriteMap");
   if (!mapGrid || !agentGrid || !randomMap || !favoriteMap) {
     console.error("TimsValorant : un élément HTML nécessaire est introuvable.");
@@ -32,22 +34,28 @@ document.addEventListener("DOMContentLoaded", function () {
   const option = m => '<option value="'+m.name+'">'+m.name+(m.active?' • classé':'')+'</option>';
   randomMap.innerHTML=maps.map(option).join("");
   favoriteMap.innerHTML=maps.map(option).join("");
-  mapGrid.innerHTML=maps.map(m=>'<article class="map-card"><span class="map-status '+(m.active?'':'off')+'">'+(m.active?'● EN CLASSÉ':'○ HORS ROTATION')+'</span><h3>'+m.name+'</h3><p>'+m.sites+'</p></article>').join("");
+  mapGrid.innerHTML=maps.map(m=>'<article class="map-card" data-map="'+m.name+'" role="button" tabindex="0" aria-label="Voir la fiche de '+m.name+'"><span class="map-status '+(m.active?'':'off')+'">'+(m.active?'● EN CLASSÉ':'○ HORS ROTATION')+'</span><h3>'+m.name+'</h3><p>'+m.sites+'</p><span class="map-card-hint">VOIR LA MAP ↗</span></article>').join("");
   function renderAgents(role) {
     agentGrid.innerHTML=agents.filter(a=>role==="Tous"||a.role===role).map(a=>
       '<article class="agent-card" data-agent="'+a.name+'" role="button" tabindex="0" aria-label="Voir la fiche de '+a.name+'"><h3>'+a.name+'</h3><p>'+a.role+'</p></article>'
     ).join("");
   }
-  fetch("https://valorant-api.com/v1/agents?isPlayableCharacter=true&language=fr-FR")
-    .then(r=>{if(!r.ok)throw new Error("API indisponible");return r.json();})
+  const agentDataPromise=fetch("https://valorant-api.com/v1/agents?isPlayableCharacter=true&language=fr-FR")
+    .then(r=>{if(!r.ok)throw new Error("API agents indisponible");return r.json();})
     .then(data=>{agentDetails=data.data||[];const active=document.querySelector(".filter-btn.selected");renderAgents(active?active.dataset.role:"Tous");})
     .catch(err=>console.warn("Fiches agents indisponibles",err));
+  const mapDataPromise=fetch("https://valorant-api.com/v1/maps?language=fr-FR")
+    .then(r=>{if(!r.ok)throw new Error("API maps indisponible");return r.json();})
+    .then(data=>{mapDetails=data.data||[];})
+    .catch(err=>console.warn("Images des maps indisponibles",err));
   const agentModal=document.createElement("div");
   agentModal.className="agent-modal";
   agentModal.innerHTML='<div class="agent-modal-backdrop" data-close-agent></div><section class="agent-modal-box" role="dialog" aria-modal="true"><button class="agent-modal-close" type="button" aria-label="Fermer" data-close-agent>×</button><div class="agent-modal-visual"><img id="agentModalImage" alt=""></div><div class="agent-modal-info"><span class="result-kicker" id="agentModalRole"></span><h2 id="agentModalName"></h2><p id="agentModalDescription"></p><h3>COMPÉTENCES</h3><div id="agentModalAbilities" class="agent-abilities"></div></div></section>';
   document.body.appendChild(agentModal);
-  function openAgent(name){
-    const base=agents.find(a=>a.name===name), info=detailByName(name);if(!base)return;
+  async function openAgent(name){
+    const base=agents.find(a=>a.name===name);if(!base)return;
+    await agentDataPromise;
+    const info=detailByName(name);
     $("agentModalName").textContent=name;
     $("agentModalRole").textContent=(info&&info.role?info.role.displayName:base.role).toUpperCase();
     $("agentModalDescription").textContent=info&&info.description?info.description:"Description momentanément indisponible.";
@@ -59,7 +67,36 @@ document.addEventListener("DOMContentLoaded", function () {
   agentGrid.addEventListener("click",e=>{const card=e.target.closest("[data-agent]");if(card)openAgent(card.dataset.agent);});
   agentGrid.addEventListener("keydown",e=>{const card=e.target.closest("[data-agent]");if(card&&(e.key==="Enter"||e.key===" ")){e.preventDefault();openAgent(card.dataset.agent);}});
   agentModal.addEventListener("click",e=>{if(e.target.closest("[data-close-agent]"))closeAgent();});
-  document.addEventListener("keydown",e=>{if(e.key==="Escape")closeAgent();});
+  document.addEventListener("keydown",e=>{if(e.key==="Escape"){closeAgent();closeMap();}});
+  const mapModal=document.createElement("div");
+  mapModal.className="map-modal";
+  mapModal.innerHTML='<div class="map-modal-backdrop" data-close-map></div><section class="map-modal-box" role="dialog" aria-modal="true"><button class="map-modal-close" type="button" aria-label="Fermer" data-close-map>×</button><div class="map-modal-hero"><img id="mapModalImage" alt=""><div class="map-modal-shade"></div><div class="map-modal-title"><span class="result-kicker" id="mapModalStatus"></span><h2 id="mapModalName"></h2><p id="mapModalSites"></p></div></div><div class="map-modal-content"><div><h3>À CONNAÎTRE SUR CETTE MAP</h3><p id="mapModalDescription"></p></div><div><h3>AGENTS RECOMMANDÉS</h3><p class="map-modal-note">Une sélection indicative selon la configuration de la map. Clique sur un agent pour découvrir sa fiche.</p><div id="mapModalAgents" class="map-agent-list"></div></div></div></section>';
+  document.body.appendChild(mapModal);
+  async function openMap(name){
+    const map=maps.find(m=>m.name===name);if(!map)return;
+    await mapDataPromise;
+    const info=mapDetailByName(name);
+    $("mapModalName").textContent=name;
+    $("mapModalStatus").textContent=map.active?"● EN ROTATION COMPÉTITIVE":"○ HORS ROTATION";
+    $("mapModalSites").textContent=map.sites;
+    $("mapModalDescription").textContent=info&&info.narrativeDescription?info.narrativeDescription:"Découvre les zones, les lignes de vue et les possibilités de rotation de "+name+". Prépare tes placements et coordonne tes compétences avec ton équipe.";
+    const mapImg=$("mapModalImage");
+    mapImg.src=info&&(info.splash||info.listViewIcon||info.displayIcon)||"";
+    mapImg.alt="Visuel de la map "+name;
+    $("mapModalAgents").innerHTML=map.agents.map(agentName=>{
+      const a=agents.find(x=>x.name===agentName);
+      return a?'<button type="button" class="map-agent-chip" data-map-agent="'+a.name+'"><strong>'+a.name+'</strong><span>'+a.role+'</span></button>':"";
+    }).join("");
+    mapModal.classList.add("visible");document.body.classList.add("modal-open");
+  }
+  function closeMap(){mapModal.classList.remove("visible");if(!agentModal.classList.contains("visible"))document.body.classList.remove("modal-open");}
+  mapGrid.addEventListener("click",e=>{const card=e.target.closest("[data-map]");if(card)openMap(card.dataset.map);});
+  mapGrid.addEventListener("keydown",e=>{const card=e.target.closest("[data-map]");if(card&&(e.key==="Enter"||e.key===" ")){e.preventDefault();openMap(card.dataset.map);}});
+  mapModal.addEventListener("click",e=>{
+    if(e.target.closest("[data-close-map]"))closeMap();
+    const agentButton=e.target.closest("[data-map-agent]");
+    if(agentButton){closeMap();openAgent(agentButton.dataset.mapAgent);}
+  });
   renderAgents("Tous");
   document.querySelectorAll(".filter-btn").forEach(btn=>btn.addEventListener("click",function(){
     document.querySelectorAll(".filter-btn").forEach(b=>b.classList.remove("selected"));
