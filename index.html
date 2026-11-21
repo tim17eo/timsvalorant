@@ -12,6 +12,7 @@
 <body>
 <div class="top-line"></div>
 <header class="site-header"><a class="brand" href="#home"><span class="brand-mark">TV</span><span>TIMS<span class="brand-light">VALORANT</span></span></a>
+<button class="header-profile" id="headerProfileButton" type="button" hidden aria-label="Ouvrir mon profil"><img id="headerProfileAvatar" alt=""><span class="header-profile-initial" id="headerProfileInitial">J</span><span class="header-profile-name" id="headerProfileName">Mon profil</span></button>
 <button class="menu-toggle" id="menuToggle" aria-label="Ouvrir le menu" aria-expanded="false">☰</button>
 <nav id="mainNav"><a href="#maps">MAPS</a><a href="#agents">AGENTS</a><a href="#agentCompare">DUEL D’AGENTS</a><a href="#weapons">ARMES</a><a href="#random">AGENT RANDOM</a><a href="#advisor">MON AGENT</a><a href="#credits">CRÉDITS</a><a href="#account" class="account-nav-link">MON COMPTE</a></nav></header>
 <main>
@@ -83,6 +84,7 @@
     </div>
     <div class="account-panel account-profile" id="accountProfile" hidden>
       <div class="account-profile-head"><div><span class="account-kicker">ESPACE JOUEUR</span><h3 id="profileWelcome">TON PROFIL</h3></div><button class="account-logout" id="logoutButton" type="button">DÉCONNEXION</button></div>
+      <div class="profile-avatar-editor"><img id="profileAvatarPreview" alt="Aperçu de ta photo de profil"><div><label for="profileAvatarInput">PHOTO DE PROFIL</label><input id="profileAvatarInput" type="file" accept="image/png,image/jpeg,image/webp"><p class="account-help">Image JPG, PNG ou WebP • 5 Mo maximum</p></div></div>
       <form id="profileForm" class="profile-form">
         <label for="profileUsername">Ton pseudo</label><input id="profileUsername" type="text" minlength="3" maxlength="20" autocomplete="nickname" required>
         <label for="profileMap">Ta map préférée</label><select id="profileMap" required></select>
