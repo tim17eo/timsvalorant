@@ -383,7 +383,7 @@ document.addEventListener("DOMContentLoaded", function () {
       profileAvatarPreview.removeAttribute("src");
       profileAvatarPreview.hidden = true;
     }
-    headerProfileName.textContent = username || "Mon profil";
+    // Le bouton de profil affiche uniquement la photo ou l’initiale, sans pseudo.
   }
 
   if (headerProfileButton) {
