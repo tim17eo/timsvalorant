@@ -391,6 +391,19 @@ document.addEventListener("DOMContentLoaded", function () {
       document.getElementById("account").scrollIntoView({ behavior: "smooth" });
     });
   }
+  const openFavoriteMap = document.getElementById("profileOpenMap");
+  const openFavoriteAgent = document.getElementById("profileOpenAgent");
+  if (openFavoriteMap) openFavoriteMap.addEventListener("click", () => {
+    const name = document.getElementById("profileMap").value;
+    const card = document.querySelector('[data-map="' + name + '"]');
+    if (card) card.click();
+  });
+  if (openFavoriteAgent) openFavoriteAgent.addEventListener("click", () => {
+    const name = document.getElementById("profileAgent").value;
+    const card = document.querySelector('[data-agent="' + name + '"]');
+    if (card) card.click();
+  });
+
   if (profileAvatarInput) {
     profileAvatarInput.addEventListener("change", () => {
       const file = profileAvatarInput.files && profileAvatarInput.files[0];
@@ -435,6 +448,8 @@ document.addEventListener("DOMContentLoaded", function () {
     document.getElementById("profileUsername").value = data.username || "";
     document.getElementById("profileMap").value = data.favorite_map || "";
     document.getElementById("profileAgent").value = data.favorite_agent || "";
+    document.getElementById("profileShortcutMap").textContent = data.favorite_map || "Non définie";
+    document.getElementById("profileShortcutAgent").textContent = data.favorite_agent || "Non défini";
     setAvatarImages(data.avatar_url, data.username);
     if (headerProfileButton) headerProfileButton.hidden = false;
     setStatus("Tu es connecté. Ton profil est synchronisé avec ton compte.", "success");
@@ -526,12 +541,10 @@ document.addEventListener("DOMContentLoaded", function () {
     setStatus("Tu es déconnecté.", "success");
   });
 
-  client.auth.onAuthStateChange((event, session) => {
+  client.auth.onAuthStateChange((event) => {
     if (event === "SIGNED_OUT") {
       showLoggedOut();
       setStatus("Tu es déconnecté.");
-    } else if (event === "SIGNED_IN" && session && session.user) {
-      window.setTimeout(() => showProfile(session.user), 0);
     }
   });
 
