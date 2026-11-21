@@ -1,63 +1,39 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="TimsValorant — profil gaming, agents favoris et actualités.">
-  <meta name="theme-color" content="#101114">
-  <title>TimsValorant — Player Hub</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css">
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="TimsValorant : maps, agents et outils pour préparer ta partie.">
+<meta name="theme-color" content="#101114">
+<title>TimsValorant — Ton assistant tactique</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <div class="top-line"></div>
-  <header class="site-header">
-    <a class="brand" href="#accueil" aria-label="TimsValorant accueil"><span class="brand-mark">TV</span><span>TIMS<span class="brand-light">VALORANT</span></span></a>
-    <button class="menu-toggle" id="menuToggle" aria-label="Ouvrir le menu" aria-expanded="false">☰</button>
-    <nav id="mainNav">
-      <a href="#profil">PROFIL</a><a href="#agents">AGENTS</a><a href="#actus">ACTUALITÉS</a><a class="nav-cta" href="#contact">ME CONTACTER <span>↗</span></a>
-    </nav>
-  </header>
-  <main>
-    <section class="hero" id="accueil">
-      <div class="hero-grid"></div>
-      <div class="hero-copy">
-        <p class="eyebrow"><span class="status-dot"></span> PLAYER HUB • FRANCE</p>
-        <h1>PLAY<br><span>WITH</span> PURPOSE.</h1>
-        <p class="hero-intro">Bienvenue sur mon espace Valorant. Retrouvez mon profil, mes agents favoris et les dernières nouvelles.</p>
-        <div class="hero-actions"><a class="button button-primary" href="#profil">DÉCOUVRIR LE PROFIL <span>↘</span></a><a class="text-link" href="#agents">Voir mes agents <span>→</span></a></div>
-      </div>
-      <div class="hero-art" aria-label="Illustration abstraite de jeu tactique"><div class="art-ring ring-one"></div><div class="art-ring ring-two"></div><div class="art-slash"></div><div class="art-label">TV<span>/</span>01</div><div class="art-cross">✳</div><div class="art-caption">FOCUS. AIM. REPEAT.</div></div>
-      <div class="hero-bottom"><span>EST. 2026</span><span>TACTICAL FPS • COMMUNITY</span><span>SCROLL TO EXPLORE ↓</span></div>
-    </section>
-    <section class="section profile-section" id="profil">
-      <div class="section-heading"><p class="eyebrow">01 / PLAYER CARD</p><h2>LE <span>JOUEUR</span></h2></div>
-      <div class="profile-card">
-        <div class="profile-main"><div class="avatar">T<span>.</span></div><div><p class="small-label">GAMER TAG</p><h3>TimsValorant</h3><p class="muted">Joueur • France 🇫🇷</p></div><span class="availability"><i></i> EN LIGNE</span></div>
-        <div class="profile-stats"><div><span class="stat-number">—</span><span class="stat-name">RANG ACTUEL</span></div><div><span class="stat-number">—</span><span class="stat-name">NIVEAU</span></div><div><span class="stat-number">—</span><span class="stat-name">MAIN AGENT</span></div></div>
-        <p class="profile-note">Les statistiques sont à compléter avec tes vraies informations. Ce site ne récupère pas automatiquement les données du jeu.</p>
-      </div>
-    </section>
-    <section class="section agents-section" id="agents">
-      <div class="section-heading"><p class="eyebrow">02 / SELECT YOUR FIGHTER</p><h2>MES <span>AGENTS</span></h2><p class="section-desc">Une sélection à personnaliser selon ton style de jeu.</p></div>
-      <div class="agent-grid">
-        <article class="agent-card"><div class="agent-number">01</div><div class="agent-symbol">⚡</div><h3>DUELISTE</h3><p>Entrer en premier et créer l'ouverture.</p><span class="role-tag">AGRESSIF</span></article>
-        <article class="agent-card featured"><div class="agent-number">02</div><div class="agent-symbol">◈</div><h3>INITIATEUR</h3><p>Donner les informations et préparer l'équipe.</p><span class="role-tag">STRATÉGIQUE</span></article>
-        <article class="agent-card"><div class="agent-number">03</div><div class="agent-symbol">✦</div><h3>CONTRÔLEUR</h3><p>Maîtriser l'espace et sécuriser les zones.</p><span class="role-tag">TACTIQUE</span></article>
-      </div>
-    </section>
-    <section class="section news-section" id="actus">
-      <div class="section-heading"><p class="eyebrow">03 / LATEST UPDATE</p><h2>LE <span>JOURNAL</span></h2></div>
-      <div class="news-panel"><div class="news-date">07 NOV<br>2026</div><div class="news-content"><p class="small-label">BIENVENUE SUR LE SITE</p><h3>Le hub TimsValorant est en ligne.</h3><p>Le site est prêt à être personnalisé : ajoute tes statistiques, tes réseaux et tes meilleurs moments.</p></div><span class="news-arrow">↗</span></div>
-    </section>
-    <section class="contact-section" id="contact">
-      <div><p class="eyebrow">04 / LET'S CONNECT</p><h2>ON SE<br><span>RETROUVE ?</span></h2><p class="contact-copy">Ajoute ici ton Riot ID, ton Discord ou tes réseaux pour que les joueurs puissent te retrouver.</p></div>
-      <div class="contact-links"><div class="contact-row"><span>RIOT ID</span><strong>À AJOUTER</strong></div><div class="contact-row"><span>DISCORD</span><strong>À AJOUTER</strong></div><div class="contact-row"><span>RÉSEAUX</span><strong>À AJOUTER</strong></div><a class="button button-light" href="mailto:contact@example.com">CONTACT <span>↗</span></a></div>
-    </section>
-  </main>
-  <footer><a class="brand footer-brand" href="#accueil"><span class="brand-mark">TV</span><span>TIMS<span class="brand-light">VALORANT</span></span></a><p>FAN-MADE WEBSITE • NON AFFILIÉ À RIOT GAMES</p><a href="#accueil" class="back-top">RETOUR EN HAUT ↑</a></footer>
-  <script src="script.js"></script>
-</body>
-</html>
+<div class="top-line"></div>
+<header class="site-header"><a class="brand" href="#home"><span class="brand-mark">TV</span><span>TIMS<span class="brand-light">VALORANT</span></span></a>
+<button class="menu-toggle" id="menuToggle" aria-label="Ouvrir le menu" aria-expanded="false">☰</button>
+<nav id="mainNav"><a href="#maps">MAPS</a><a href="#agents">AGENTS</a><a href="#random">AGENT RANDOM</a><a href="#advisor">MON AGENT</a><a href="#credits">CRÉDITS</a></nav></header>
+<main>
+<section class="hero" id="home"><div class="hero-grid"></div><div class="hero-copy"><p class="eyebrow"><span class="status-dot"></span> TON ASSISTANT VALORANT</p><h1>PREPARE<br><span>YOUR</span> GAME.</h1><p class="hero-intro">Trouve un agent adapté à ta map, découvre le roster et prépare ta prochaine partie avec des outils simples.</p><div class="hero-actions"><a class="button button-primary" href="#advisor">TROUVER MON AGENT <span>↘</span></a><a class="text-link" href="#maps">Explorer les maps →</a></div></div>
+<div class="hero-art"><div class="art-ring ring-one"></div><div class="art-ring ring-two"></div><div class="art-slash"></div><div class="art-label">TV<span>/</span></div><div class="art-cross">✳</div><div class="art-caption">MAP • AGENT • STRATEGY</div></div>
+<div class="hero-bottom"><span>VALORANT COMPANION</span><span>FAN-MADE PROJECT</span><span>SCROLL TO EXPLORE ↓</span></div></section>
+
+<section class="section" id="maps"><div class="section-heading"><p class="eyebrow">01 / MAP DATABASE</p><h2>LES <span>MAPS</span></h2><p class="section-desc">Retrouve les 13 maps standard et repère celles de la rotation compétitive actuelle.</p></div>
+<div class="map-legend"><span><i class="legend-dot active"></i> Rotation compétitive</span><span><i class="legend-dot"></i> Hors rotation</span></div><div class="map-grid" id="mapGrid"></div><p class="data-note">La rotation peut changer à chaque nouvel Act. Vérifie toujours le client VALORANT avant de lancer une partie classée.</p></section>
+
+<section class="section agents-section" id="agents"><div class="section-heading"><p class="eyebrow">02 / AGENT DATABASE</p><h2>CHOISIS TON <span>AGENT</span></h2><p class="section-desc">Les agents disponibles, regroupés par rôle.</p></div>
+<div class="filter-row" id="agentFilters"><button class="filter-btn selected" data-role="Tous">Tous</button><button class="filter-btn" data-role="Duelliste">Duellistes</button><button class="filter-btn" data-role="Initiateur">Initiateurs</button><button class="filter-btn" data-role="Contrôleur">Contrôleurs</button><button class="filter-btn" data-role="Sentinelle">Sentinelles</button></div><div class="agent-grid" id="agentGrid"></div></section>
+
+<section class="section tool-section" id="random"><div class="section-heading"><p class="eyebrow">03 / QUICK PICK</p><h2>AGENT <span>ALÉATOIRE</span></h2><p class="section-desc">Choisis ta map et laisse le hasard sélectionner un agent adapté.</p></div>
+<div class="tool-card"><div class="tool-form"><label for="randomMap">Ta map</label><select id="randomMap"></select><button class="button button-primary" id="randomButton">GÉNÉRER UN AGENT <span>✦</span></button></div><div class="result-panel" id="randomResult" aria-live="polite"><div class="result-placeholder"><span>?</span><p>Ton agent apparaîtra ici.</p></div></div></div></section>
+
+<section class="section advisor-section" id="advisor"><div class="section-heading"><p class="eyebrow">04 / PERSONAL PICK</p><h2>TON AGENT <span>IDÉAL</span></h2><p class="section-desc">Indique ton rang et ta map préférée pour recevoir une suggestion expliquée.</p></div>
+<div class="tool-card advisor-card"><div class="advisor-form"><div class="field"><label for="rankSelect">Ton rang</label><select id="rankSelect"><option>Fer</option><option>Bronze</option><option>Argent</option><option>Or</option><option>Platine</option><option>Diamant</option><option>Ascendant</option><option>Immortel</option><option>Radiant</option></select></div><div class="field"><label for="favoriteMap">Ta map préférée</label><select id="favoriteMap"></select></div><div class="field"><label for="playStyle">Ton style de jeu</label><select id="playStyle"><option value="balanced">Polyvalent</option><option value="aggressive">Agressif / duel</option><option value="support">Soutien / information</option><option value="defensive">Défense / contrôle</option></select></div><button class="button button-primary" id="advisorButton">TROUVER MON AGENT <span>↗</span></button></div><div class="result-panel" id="advisorResult" aria-live="polite"><div class="result-placeholder"><span>★</span><p>Ta recommandation personnalisée apparaîtra ici.</p></div></div><p class="data-note">Suggestion indicative basée sur la map et le style choisi : le meilleur agent reste celui que tu maîtrises et avec lequel ton équipe peut bien se coordonner.</p></div></section>
+
+<section class="section credits-section" id="credits"><div class="section-heading"><p class="eyebrow">05 / ECONOMY HELPER</p><h2>GESTION DES <span>CRÉDITS</span></h2><p class="section-desc">Prépare ton budget de manche et vérifie ce qu'il te reste après tes achats de protections et de compétences.</p></div>
+<div class="tool-card credit-card"><div class="credit-form"><div class="field"><label for="creditsInput">Tes crédits disponibles</label><input id="creditsInput" type="number" min="0" max="9000" step="50" value="3900"></div><div class="field"><label for="shieldSelect">Budget protections</label><select id="shieldSelect"><option value="0">Aucune — 0 crédits</option><option value="400">Protection légère — 400</option><option value="650">Protection régénérante — 650</option><option value="1000" selected>Protection lourde — 1 000</option></select></div><div class="field"><label for="abilityInput">Budget compétences</label><input id="abilityInput" type="number" min="0" max="9000" step="50" value="400"></div><button class="button button-primary" id="budgetButton">CALCULER MON BUDGET <span>↗</span></button></div><div class="budget-result" id="budgetResult" aria-live="polite"><span>CRÉDITS RESTANTS</span><strong>2 500</strong><p>Après les protections et les compétences prévues.</p></div><p class="data-note">Outil de suivi de budget uniquement. Les prix et achats disponibles peuvent varier : vérifie toujours la boutique en jeu.</p></div></section>
+</main>
+<footer><a class="brand footer-brand" href="#home"><span class="brand-mark">TV</span><span>TIMS<span class="brand-light">VALORANT</span></span></a><p>FAN-MADE WEBSITE • NON AFFILIÉ À RIOT GAMES</p><a href="#home" class="back-top">RETOUR EN HAUT ↑</a></footer>
+<script src="script.js"></script>
+</body></html>
