@@ -192,3 +192,10 @@ body.modal-open{overflow:hidden}
 @media(max-width:700px){.header-profile{margin-left:auto;margin-right:12px;padding-right:7px}.header-profile-name{display:none}.profile-avatar-editor{align-items:flex-start;flex-direction:column}}
 
 .header-profile img[hidden],.header-profile-initial[hidden]{display:none!important}
+
+
+/* Avatar seul dans la barre de navigation */
+.header-profile{padding:0;margin-left:auto;margin-right:14px;border:0;background:transparent;gap:0}
+.header-profile img,.header-profile-initial{width:42px;height:42px;flex:0 0 42px}
+.header-profile-name{display:none!important}
+@media(max-width:700px){.header-profile{margin-left:auto;margin-right:8px;padding:0}.header-profile img,.header-profile-initial{width:36px;height:36px;flex-basis:36px}}
