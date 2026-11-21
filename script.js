@@ -199,6 +199,29 @@ document.addEventListener("DOMContentLoaded", function () {
   agentGrid.addEventListener("keydown",e=>{const card=e.target.closest("[data-agent]");if(card&&(e.key==="Enter"||e.key===" ")){e.preventDefault();openAgent(card.dataset.agent);}});
   agentModal.addEventListener("click",e=>{if(e.target.closest("[data-close-agent]"))closeAgent();});
   document.addEventListener("keydown",e=>{if(e.key==="Escape"){closeAgent();closeMap();closeWeapon();}});
+  // Gestion centralisée des clics et du clavier sur les cartes.
+  // Le mode capture évite qu'un autre élément de la carte bloque l'ouverture.
+  document.addEventListener("click",function(e){
+    const mapCard=e.target.closest("[data-map]");
+    const agentCard=e.target.closest("[data-agent]");
+    const weaponCard=e.target.closest("[data-weapon]");
+    if(mapCard){e.preventDefault();e.stopImmediatePropagation();openMap(mapCard.dataset.map);return;}
+    if(agentCard){e.preventDefault();e.stopImmediatePropagation();openAgent(agentCard.dataset.agent);return;}
+    if(weaponCard){e.preventDefault();e.stopImmediatePropagation();openWeapon(weaponCard.dataset.weapon);return;}
+  },true);
+  document.addEventListener("keydown",function(e){
+    if(e.key!=="Enter"&&e.key!==" ")return;
+    const mapCard=e.target.closest("[data-map]");
+    const agentCard=e.target.closest("[data-agent]");
+    const weaponCard=e.target.closest("[data-weapon]");
+    const card=mapCard||agentCard||weaponCard;
+    if(!card)return;
+    e.preventDefault();e.stopImmediatePropagation();
+    if(mapCard)openMap(mapCard.dataset.map);
+    else if(agentCard)openAgent(agentCard.dataset.agent);
+    else openWeapon(weaponCard.dataset.weapon);
+  },true);
+
   const mapModal=document.createElement("div");
   mapModal.className="map-modal";
   mapModal.innerHTML='<div class="map-modal-backdrop" data-close-map></div><section class="map-modal-box" role="dialog" aria-modal="true"><button class="map-modal-close" type="button" aria-label="Fermer" data-close-map>×</button><div class="map-modal-hero"><img id="mapModalImage" alt=""><div class="map-modal-shade"></div><div class="map-modal-title"><span class="result-kicker" id="mapModalStatus"></span><h2 id="mapModalName"></h2><p id="mapModalSites"></p></div></div><div class="map-modal-content"><div><h3>À CONNAÎTRE SUR CETTE MAP</h3><p id="mapModalDescription"></p></div><div><h3>AGENTS RECOMMANDÉS</h3><p class="map-modal-note">Une sélection indicative selon la configuration de la map. Clique sur un agent pour découvrir sa fiche.</p><div id="mapModalAgents" class="map-agent-list"></div></div></div></section>';
