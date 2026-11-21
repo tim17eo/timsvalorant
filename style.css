@@ -207,3 +207,16 @@ body.modal-open{overflow:hidden}
 #headerProfileButton img,#headerProfileButton .header-profile-initial{width:42px;height:42px;flex:0 0 42px;border-radius:50%;object-fit:cover}
 #headerProfileName{display:none!important}
 @media(max-width:700px){#headerProfileButton{width:40px;height:40px;min-width:40px;margin-right:8px;padding:1px}#headerProfileButton img,#headerProfileButton .header-profile-initial{width:36px;height:36px;flex-basis:36px}}
+
+
+/* Espace joueur : raccourcis personnalisés */
+.player-shortcuts{display:grid;grid-template-columns:1.1fr 1fr 1fr;gap:12px;margin:0 0 22px;padding:18px;background:#15171d;border:1px solid var(--line)}
+.player-shortcuts>div{align-self:center}
+.player-shortcuts h4{font:900 22px var(--display);margin:7px 0}
+.player-shortcuts p{font-size:10px;line-height:1.6;color:var(--muted);margin:0}
+.player-shortcut{display:flex;flex-direction:column;align-items:flex-start;justify-content:center;gap:8px;min-width:0;padding:16px;background:#22252d;border:1px solid var(--line);color:#fff;text-align:left;cursor:pointer;transition:border-color .2s,transform .2s}
+.player-shortcut:hover{border-color:var(--red);transform:translateY(-2px)}
+.player-shortcut span,.player-shortcut small{font-size:8px;letter-spacing:1.1px;color:var(--muted)}
+.player-shortcut strong{font:800 24px var(--display);overflow-wrap:anywhere}
+.player-shortcut small{color:#ff7782}
+@media(max-width:700px){.player-shortcuts{grid-template-columns:1fr 1fr;padding:13px}.player-shortcuts>div{grid-column:1/-1}.player-shortcut{padding:13px}.player-shortcut strong{font-size:20px}}
