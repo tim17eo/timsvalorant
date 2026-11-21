@@ -278,3 +278,39 @@ main>section[hidden]{display:none!important}
 .crosshair-actions .btn-primary{background:var(--red);border-color:var(--red);color:#fff}
 .crosshair-status{font-size:12px;color:#bfc1c8;margin:0}.crosshair-note{font-size:10px;color:var(--muted);line-height:1.6;margin:0}
 @media(max-width:760px){.crosshair-layout{grid-template-columns:1fr}}
+
+
+/* Catalogue de skins */
+.skins-section{background:#111216}
+.skins-toolbar{display:grid;grid-template-columns:1.5fr 1fr;gap:14px;margin:24px 0}
+.skins-search,.skins-filter{display:flex;flex-direction:column;gap:8px}
+.skins-search span,.skins-filter span{font-size:9px;letter-spacing:1.2px;font-weight:800;color:var(--muted)}
+.skins-search input,.skins-filter select{background:#20232b;border:1px solid var(--line);color:var(--text);padding:13px;min-height:46px}
+.skins-status{font-size:11px;color:var(--muted);margin:15px 0}
+.skins-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+.skin-card{min-width:0;padding:0;background:linear-gradient(145deg,#20232b,#17191f);border:1px solid var(--line);color:var(--text);text-align:left;cursor:pointer;transition:transform .2s,border-color .2s;overflow:hidden}
+.skin-card:hover,.skin-card:focus-visible{transform:translateY(-3px);border-color:var(--red);outline:none}
+.skin-card-image{height:145px;display:flex;align-items:center;justify-content:center;padding:12px;background:radial-gradient(circle,rgba(255,70,85,.1),transparent 70%),#15171d}
+.skin-card-image img{width:100%;height:100%;object-fit:contain;filter:drop-shadow(0 8px 12px rgba(0,0,0,.35))}
+.skin-no-image{font:900 45px var(--display);color:var(--red)}
+.skin-card-info{display:flex;flex-direction:column;gap:5px;padding:13px}
+.skin-card-info strong{font:800 19px var(--display);overflow-wrap:anywhere}
+.skin-card-info small{font-size:9px;letter-spacing:.8px;color:var(--muted);text-transform:uppercase}
+.skins-load-wrap{display:flex;justify-content:center;margin-top:24px}
+.skins-error{grid-column:1/-1;padding:24px;background:#20232b;border:1px solid var(--line);font-size:12px;color:var(--muted)}
+.skin-modal[hidden]{display:none!important}
+.skin-modal{position:fixed;inset:0;z-index:1005;display:grid;place-items:center;padding:20px}
+.skin-modal-backdrop{position:absolute;inset:0;background:rgba(0,0,0,.86);backdrop-filter:blur(7px)}
+.skin-modal-box{position:relative;z-index:1;width:min(900px,100%);max-height:90vh;overflow:auto;display:grid;grid-template-columns:1fr 1fr;background:#181a20;border:1px solid rgba(255,70,85,.45);box-shadow:0 24px 90px rgba(0,0,0,.65)}
+.skin-modal-close{position:absolute;right:12px;top:12px;width:38px;height:38px;border:1px solid var(--line);background:#101216;color:white;font-size:26px;cursor:pointer}
+.skin-modal-visual{min-height:330px;display:grid;place-items:center;padding:25px;background:radial-gradient(circle,rgba(255,70,85,.13),transparent 68%),#111216}
+.skin-modal-visual img{width:100%;max-height:390px;object-fit:contain}
+.skin-modal-info{padding:38px 28px;align-self:center}
+.skin-modal-info h3{font:900 clamp(32px,5vw,52px)/.95 var(--display);margin:12px 0}
+.skin-modal-info>p{font-size:11px;line-height:1.7;color:var(--muted)}
+.skin-chromas{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;margin-top:18px}
+.skin-chroma{min-width:0;padding:9px;background:#22252d;border:1px solid var(--line);color:var(--text);cursor:pointer;text-align:left}
+.skin-chroma img{width:100%;height:52px;object-fit:contain}
+.skin-chroma small{display:block;font-size:9px;color:var(--muted);overflow-wrap:anywhere}
+@media(max-width:900px){.skins-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:650px){.skins-toolbar{grid-template-columns:1fr}.skins-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.skin-card-image{height:115px}.skin-card-info{padding:10px}.skin-card-info strong{font-size:17px}.skin-modal{padding:9px}.skin-modal-box{grid-template-columns:1fr;max-height:94vh}.skin-modal-visual{min-height:190px;height:25vh}.skin-modal-visual img{max-height:100%}.skin-modal-info{padding:23px 20px}}
