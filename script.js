@@ -34,11 +34,9 @@ document.addEventListener("DOMContentLoaded", function () {
   favoriteMap.innerHTML=maps.map(option).join("");
   mapGrid.innerHTML=maps.map(m=>'<article class="map-card"><span class="map-status '+(m.active?'':'off')+'">'+(m.active?'● EN CLASSÉ':'○ HORS ROTATION')+'</span><h3>'+m.name+'</h3><p>'+m.sites+'</p></article>').join("");
   function renderAgents(role) {
-    agentGrid.innerHTML=agents.filter(a=>role==="Tous"||a.role===role).map(a=>{
-      const info=detailByName(a.name);
-      const portrait=info&&info.displayIcon?'<img class="agent-thumb" src="'+info.displayIcon+'" alt="" loading="lazy">':'<span class="agent-thumb-fallback">'+a.name.charAt(0)+'</span>';
-      return '<button type="button" class="agent-card" data-agent="'+a.name+'">'+portrait+'<span class="agent-card-copy"><strong>'+a.name+'</strong><small>'+a.role+'</small></span><span class="agent-card-arrow">↗</span></button>';
-    }).join("");
+    agentGrid.innerHTML=agents.filter(a=>role==="Tous"||a.role===role).map(a=>
+      '<article class="agent-card" data-agent="'+a.name+'" role="button" tabindex="0" aria-label="Voir la fiche de '+a.name+'"><h3>'+a.name+'</h3><p>'+a.role+'</p></article>'
+    ).join("");
   }
   fetch("https://valorant-api.com/v1/agents?isPlayableCharacter=true&language=fr-FR")
     .then(r=>{if(!r.ok)throw new Error("API indisponible");return r.json();})
@@ -59,6 +57,7 @@ document.addEventListener("DOMContentLoaded", function () {
   }
   function closeAgent(){agentModal.classList.remove("visible");document.body.classList.remove("modal-open");}
   agentGrid.addEventListener("click",e=>{const card=e.target.closest("[data-agent]");if(card)openAgent(card.dataset.agent);});
+  agentGrid.addEventListener("keydown",e=>{const card=e.target.closest("[data-agent]");if(card&&(e.key==="Enter"||e.key===" ")){e.preventDefault();openAgent(card.dataset.agent);}});
   agentModal.addEventListener("click",e=>{if(e.target.closest("[data-close-agent]"))closeAgent();});
   document.addEventListener("keydown",e=>{if(e.key==="Escape")closeAgent();});
   renderAgents("Tous");
