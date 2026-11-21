@@ -422,7 +422,6 @@ document.addEventListener("DOMContentLoaded", function () {
   const historyList = document.getElementById("playerHistoryList");
   const refreshHistoryButton = document.getElementById("refreshHistoryButton");
   let historyUserId = null;
-  let historyBusy = false;
   function renderHistory(items) {
     if (!historyList) return;
     if (!items || !items.length) {
@@ -444,10 +443,8 @@ document.addEventListener("DOMContentLoaded", function () {
     renderHistory(data);
   }
   async function recordPlayerActivity(type,name) {
-    if (!historyUserId || !name || historyBusy) return;
-    historyBusy = true;
+    if (!historyUserId || !name) return;
     const {error} = await client.from("player_activity").insert({user_id:historyUserId,item_type:type,item_name:name});
-    historyBusy = false;
     if (!error) loadPlayerHistory();
   }
   if (refreshHistoryButton) refreshHistoryButton.addEventListener("click",loadPlayerHistory);
