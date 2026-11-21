@@ -22,6 +22,8 @@ document.addEventListener("DOMContentLoaded", function () {
   ];
   const $ = id => document.getElementById(id);
   const mapGrid=$("mapGrid"), agentGrid=$("agentGrid");
+  let agentDetails=[];
+  const detailByName=name=>agentDetails.find(a=>a.displayName.toLowerCase()===name.toLowerCase());
   const randomMap=$("randomMap"), favoriteMap=$("favoriteMap");
   if (!mapGrid || !agentGrid || !randomMap || !favoriteMap) {
     console.error("TimsValorant : un élément HTML nécessaire est introuvable.");
@@ -32,8 +34,33 @@ document.addEventListener("DOMContentLoaded", function () {
   favoriteMap.innerHTML=maps.map(option).join("");
   mapGrid.innerHTML=maps.map(m=>'<article class="map-card"><span class="map-status '+(m.active?'':'off')+'">'+(m.active?'● EN CLASSÉ':'○ HORS ROTATION')+'</span><h3>'+m.name+'</h3><p>'+m.sites+'</p></article>').join("");
   function renderAgents(role) {
-    agentGrid.innerHTML=agents.filter(a=>role==="Tous"||a.role===role).map(a=>'<article class="agent-card"><h3>'+a.name+'</h3><p>'+a.role+'</p></article>').join("");
+    agentGrid.innerHTML=agents.filter(a=>role==="Tous"||a.role===role).map(a=>{
+      const info=detailByName(a.name);
+      const portrait=info&&info.displayIcon?'<img class="agent-thumb" src="'+info.displayIcon+'" alt="" loading="lazy">':'<span class="agent-thumb-fallback">'+a.name.charAt(0)+'</span>';
+      return '<button type="button" class="agent-card" data-agent="'+a.name+'">'+portrait+'<span class="agent-card-copy"><strong>'+a.name+'</strong><small>'+a.role+'</small></span><span class="agent-card-arrow">↗</span></button>';
+    }).join("");
   }
+  fetch("https://valorant-api.com/v1/agents?isPlayableCharacter=true&language=fr-FR")
+    .then(r=>{if(!r.ok)throw new Error("API indisponible");return r.json();})
+    .then(data=>{agentDetails=data.data||[];const active=document.querySelector(".filter-btn.selected");renderAgents(active?active.dataset.role:"Tous");})
+    .catch(err=>console.warn("Fiches agents indisponibles",err));
+  const agentModal=document.createElement("div");
+  agentModal.className="agent-modal";
+  agentModal.innerHTML='<div class="agent-modal-backdrop" data-close-agent></div><section class="agent-modal-box" role="dialog" aria-modal="true"><button class="agent-modal-close" type="button" aria-label="Fermer" data-close-agent>×</button><div class="agent-modal-visual"><img id="agentModalImage" alt=""></div><div class="agent-modal-info"><span class="result-kicker" id="agentModalRole"></span><h2 id="agentModalName"></h2><p id="agentModalDescription"></p><h3>COMPÉTENCES</h3><div id="agentModalAbilities" class="agent-abilities"></div></div></section>';
+  document.body.appendChild(agentModal);
+  function openAgent(name){
+    const base=agents.find(a=>a.name===name), info=detailByName(name);if(!base)return;
+    $("agentModalName").textContent=name;
+    $("agentModalRole").textContent=(info&&info.role?info.role.displayName:base.role).toUpperCase();
+    $("agentModalDescription").textContent=info&&info.description?info.description:"Description momentanément indisponible.";
+    const img=$("agentModalImage");img.src=info&&(info.fullPortrait||info.fullPortraitV2||info.displayIcon)||"";img.alt="Portrait de "+name;
+    $("agentModalAbilities").innerHTML=info&&info.abilities?info.abilities.filter(a=>a.slot!=="Passive").map(a=>'<article><strong>'+a.displayName+'</strong><p>'+a.description+'</p></article>').join(""):"";
+    agentModal.classList.add("visible");document.body.classList.add("modal-open");
+  }
+  function closeAgent(){agentModal.classList.remove("visible");document.body.classList.remove("modal-open");}
+  agentGrid.addEventListener("click",e=>{const card=e.target.closest("[data-agent]");if(card)openAgent(card.dataset.agent);});
+  agentModal.addEventListener("click",e=>{if(e.target.closest("[data-close-agent]"))closeAgent();});
+  document.addEventListener("keydown",e=>{if(e.key==="Escape")closeAgent();});
   renderAgents("Tous");
   document.querySelectorAll(".filter-btn").forEach(btn=>btn.addEventListener("click",function(){
     document.querySelectorAll(".filter-btn").forEach(b=>b.classList.remove("selected"));
