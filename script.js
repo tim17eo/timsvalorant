@@ -105,10 +105,51 @@ document.addEventListener("DOMContentLoaded", function () {
       '<article class="agent-card" data-agent="'+a.name+'" role="button" tabindex="0" aria-label="Voir la fiche de '+a.name+'"><h3>'+a.name+'</h3><p>'+a.role+'</p></article>'
     ).join("");
   }
+  const agentCompareMap=$("agentCompareMap"),agentCompareA=$("agentCompareA"),agentCompareB=$("agentCompareB"),agentCompareResult=$("agentCompareResult");
+  function fillAgentCompare(){
+    if(!agentCompareMap||!agentCompareA||!agentCompareB)return;
+    agentCompareMap.innerHTML=maps.map(m=>'<option value="'+m.name+'">'+m.name+'</option>').join("");
+    const opts=agents.map(a=>'<option value="'+a.name+'">'+a.name+' — '+a.role+'</option>').join("");
+    agentCompareA.innerHTML=opts;agentCompareB.innerHTML=opts;
+    agentCompareA.value="Jett";agentCompareB.value="Raze";
+  }
+  function agentMapScore(map,agentName){
+    const index=map.agents.indexOf(agentName);
+    return index===-1?4.5:10-index*1.25;
+  }
+  function agentMapReason(map,agentName,score){
+    const agent=agents.find(a=>a.name===agentName);
+    const index=map.agents.indexOf(agentName);
+    if(index===0)return "C’est le premier agent de notre sélection pour "+map.name+".";
+    if(index>0)return "Il figure dans notre sélection recommandée pour "+map.name+" (position "+(index+1)+").";
+    return "Il ne figure pas dans notre sélection principale pour "+map.name+". Cela ne veut pas dire qu’il est mauvais : ton niveau et ton style comptent aussi.";
+  }
+  function renderAgentCompare(){
+    if(!agentCompareMap||!agentCompareA||!agentCompareB||!agentCompareResult)return;
+    const map=maps.find(m=>m.name===agentCompareMap.value);
+    const nameA=agentCompareA.value,nameB=agentCompareB.value;
+    if(nameA===nameB){agentCompareResult.innerHTML='<p class="compare-warning">Choisis deux agents différents pour les comparer.</p>';return;}
+    const a=agents.find(x=>x.name===nameA),b=agents.find(x=>x.name===nameB);
+    if(!map||!a||!b)return;
+    const scoreA=agentMapScore(map,nameA),scoreB=agentMapScore(map,nameB);
+    const winner=scoreA===scoreB?null:(scoreA>scoreB?a:b);
+    const infoA=detailByName(nameA),infoB=detailByName(nameB);
+    const mapInfo=mapDetailByName(map.name);
+    const portraitA=infoA&&(infoA.displayIcon||infoA.fullPortrait)||"";
+    const portraitB=infoB&&(infoB.displayIcon||infoB.fullPortrait)||"";
+    const mapImage=mapInfo&&(mapInfo.splash||mapInfo.listViewIcon)||"";
+    const card=(agent,score,reason,portrait)=>'<article class="agent-match-card '+(winner&&winner.name===agent.name?"recommended":"")+'"><div class="agent-match-image">'+(portrait?'<img src="'+portrait+'" alt="Portrait de '+agent.name+'">':'')+'</div><span class="agent-match-role">'+agent.role.toUpperCase()+'</span><h3>'+agent.name+'</h3><div class="agent-match-score"><strong>'+score.toLocaleString("fr-FR",{maximumFractionDigits:1})+'/10</strong><span>INDICE MAP</span></div><p>'+reason+'</p>'+(winner&&winner.name===agent.name?'<span class="agent-match-badge">CHOIX CONSEILLÉ</span>':"")+'</article>';
+    agentCompareResult.innerHTML='<div class="agent-match-map">'+(mapImage?'<img src="'+mapImage+'" alt="Visuel de '+map.name+'">':"")+'<div><span class="eyebrow">COMPARAISON SUR</span><h3>'+map.name+'</h3><p>'+map.sites+'</p></div></div><div class="agent-match-grid">'+card(a,scoreA,agentMapReason(map,nameA,scoreA),portraitA)+'<div class="agent-compare-vs big">VS</div>'+card(b,scoreB,agentMapReason(map,nameB,scoreB),portraitB)+'</div><div class="agent-match-verdict"><span class="eyebrow">NOTRE CONSEIL</span><h3>'+(winner?winner.name+" est le choix le plus recommandé sur "+map.name:"Égalité sur "+map.name)+'</h3><p>'+(winner?"D’après le classement de picks intégré à cette map, "+winner.name+" est mieux placé dans notre sélection. "+(winner.name===nameA?agentMapReason(map,nameA,scoreA):agentMapReason(map,nameB,scoreB)):"Les deux agents ont le même indice dans notre sélection. Choisis celui que tu maîtrises le mieux et selon les besoins de ton équipe.")+'</p></div>';
+  }
+  fillAgentCompare();
+  const agentCompareButton=$("agentCompareButton");
+  if(agentCompareButton)agentCompareButton.addEventListener("click",renderAgentCompare);
   const agentDataPromise=fetch("https://valorant-api.com/v1/agents?isPlayableCharacter=true&language=fr-FR")
     .then(r=>{if(!r.ok)throw new Error("API agents indisponible");return r.json();})
     .then(data=>{agentDetails=data.data||[];const active=document.querySelector(".filter-btn.selected");renderAgents(active?active.dataset.role:"Tous");})
     .catch(err=>console.warn("Fiches agents indisponibles",err));
+  agentDataPromise.then(()=>{if(agentCompareResult)renderAgentCompare();});
+  mapDataPromise.then(()=>{if(agentCompareResult)renderAgentCompare();});
   const mapDataPromise=fetch("https://valorant-api.com/v1/maps?language=fr-FR")
     .then(r=>{if(!r.ok)throw new Error("API maps indisponible");return r.json();})
     .then(data=>{mapDetails=data.data||[];})
