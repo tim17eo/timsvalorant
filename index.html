@@ -13,7 +13,7 @@
 <div class="top-line"></div>
 <header class="site-header"><a class="brand" href="#home"><span class="brand-mark">TV</span><span>TIMS<span class="brand-light">VALORANT</span></span></a>
 <button class="menu-toggle" id="menuToggle" aria-label="Ouvrir le menu" aria-expanded="false">☰</button>
-<nav id="mainNav"><a href="#maps">MAPS</a><a href="#agents">AGENTS</a><a href="#agentCompare">DUEL D’AGENTS</a><a href="#weapons">ARMES</a><a href="#random">AGENT RANDOM</a><a href="#advisor">MON AGENT</a><a href="#credits">CRÉDITS</a></nav></header>
+<nav id="mainNav"><a href="#maps">MAPS</a><a href="#agents">AGENTS</a><a href="#agentCompare">DUEL D’AGENTS</a><a href="#weapons">ARMES</a><a href="#random">AGENT RANDOM</a><a href="#advisor">MON AGENT</a><a href="#credits">CRÉDITS</a><a href="#account" class="account-nav-link">MON COMPTE</a></nav></header>
 <main>
 <section class="hero" id="home"><div class="hero-grid"></div><div class="hero-copy"><p class="eyebrow"><span class="status-dot"></span> TON ASSISTANT VALORANT</p><h1>PREPARE<br><span>YOUR</span> GAME.</h1><p class="hero-intro">Trouve un agent adapté à ta map, découvre le roster et prépare ta prochaine partie avec des outils simples.</p><div class="hero-actions"><a class="button button-primary" href="#advisor">TROUVER MON AGENT <span>↘</span></a><a class="text-link" href="#maps">Explorer les maps →</a></div></div>
 <div class="hero-art"><div class="art-ring ring-one"></div><div class="art-ring ring-two"></div><div class="art-slash"></div><div class="art-label">TV<span>/</span></div><div class="art-cross">✳</div><div class="art-caption">MAP • AGENT • STRATEGY</div></div>
@@ -58,9 +58,46 @@
 <section class="section advisor-section" id="advisor"><div class="section-heading"><p class="eyebrow">04 / PERSONAL PICK</p><h2>TON AGENT <span>IDÉAL</span></h2><p class="section-desc">Indique ton rang et ta map préférée pour recevoir une suggestion expliquée.</p></div>
 <div class="tool-card advisor-card"><div class="advisor-form"><div class="field"><label for="rankSelect">Ton rang</label><select id="rankSelect"><option>Fer</option><option>Bronze</option><option>Argent</option><option>Or</option><option>Platine</option><option>Diamant</option><option>Ascendant</option><option>Immortel</option><option>Radiant</option></select></div><div class="field"><label for="favoriteMap">Ta map préférée</label><select id="favoriteMap"></select></div><div class="field"><label for="playStyle">Ton style de jeu</label><select id="playStyle"><option value="balanced">Polyvalent</option><option value="aggressive">Agressif / duel</option><option value="support">Soutien / information</option><option value="defensive">Défense / contrôle</option></select></div><button class="button button-primary" id="advisorButton">TROUVER MON AGENT <span>↗</span></button></div><div class="result-panel" id="advisorResult" aria-live="polite"><div class="result-placeholder"><span>★</span><p>Ta recommandation personnalisée apparaîtra ici.</p></div></div><p class="data-note">Suggestion indicative basée sur la map et le style choisi : le meilleur agent reste celui que tu maîtrises et avec lequel ton équipe peut bien se coordonner.</p></div></section>
 
+
+<section class="section account-section" id="account">
+  <div class="section-heading"><p class="eyebrow">06 / PLAYER PROFILE</p><h2>TON <span>COMPTE</span></h2><p class="section-desc">Crée ton profil TimsValorant, retrouve-le sur tes appareils et modifie tes préférences quand tu veux.</p></div>
+  <div class="account-shell">
+    <div class="account-status" id="accountStatus" role="status" aria-live="polite">Connexion sécurisée en cours de préparation…</div>
+    <div class="account-auth-grid" id="accountAuthForms">
+      <form class="account-panel" id="signupForm">
+        <span class="account-kicker">NOUVEAU JOUEUR</span><h3>CRÉER UN COMPTE</h3>
+        <label for="signupUsername">Pseudo</label><input id="signupUsername" type="text" minlength="3" maxlength="20" autocomplete="nickname" required placeholder="Ton pseudo">
+        <label for="signupEmail">Adresse e-mail</label><input id="signupEmail" type="email" autocomplete="email" required placeholder="nom@exemple.fr">
+        <label for="signupPassword">Mot de passe</label><input id="signupPassword" type="password" minlength="8" autocomplete="new-password" required placeholder="8 caractères minimum">
+        <label for="signupMap">Ta map préférée</label><select id="signupMap" required></select>
+        <label for="signupAgent">Ton agent préféré</label><select id="signupAgent" required></select>
+        <button class="button button-primary" type="submit">CRÉER MON COMPTE ↗</button>
+      </form>
+      <form class="account-panel" id="loginForm">
+        <span class="account-kicker">DÉJÀ INSCRIT ?</span><h3>SE CONNECTER</h3>
+        <label for="loginEmail">Adresse e-mail</label><input id="loginEmail" type="email" autocomplete="email" required placeholder="nom@exemple.fr">
+        <label for="loginPassword">Mot de passe</label><input id="loginPassword" type="password" autocomplete="current-password" required placeholder="Ton mot de passe">
+        <button class="button button-primary" type="submit">ME CONNECTER ↗</button>
+        <p class="account-help">Ton compte et tes préférences sont enregistrés en ligne. Ne partage jamais ton mot de passe.</p>
+      </form>
+    </div>
+    <div class="account-panel account-profile" id="accountProfile" hidden>
+      <div class="account-profile-head"><div><span class="account-kicker">ESPACE JOUEUR</span><h3 id="profileWelcome">TON PROFIL</h3></div><button class="account-logout" id="logoutButton" type="button">DÉCONNEXION</button></div>
+      <form id="profileForm" class="profile-form">
+        <label for="profileUsername">Ton pseudo</label><input id="profileUsername" type="text" minlength="3" maxlength="20" autocomplete="nickname" required>
+        <label for="profileMap">Ta map préférée</label><select id="profileMap" required></select>
+        <label for="profileAgent">Ton agent préféré</label><select id="profileAgent" required></select>
+        <button class="button button-primary" type="submit">ENREGISTRER MES MODIFICATIONS ↗</button>
+      </form>
+    </div>
+    <p class="account-privacy">Tes informations de profil sont privées : chaque joueur ne peut consulter et modifier que son propre profil. Utilise une adresse e-mail avec l’accord d’un parent ou responsable.</p>
+  </div>
+</section>
+
 <section class="section credits-section" id="credits"><div class="section-heading"><p class="eyebrow">05 / ECONOMY HELPER</p><h2>GESTION DES <span>CRÉDITS</span></h2><p class="section-desc">Prépare ton budget de manche et vérifie ce qu'il te reste après tes achats de protections et de compétences.</p></div>
 <div class="tool-card credit-card"><div class="credit-form"><div class="field"><label for="creditsInput">Tes crédits disponibles</label><input id="creditsInput" type="number" min="0" max="9000" step="50" value="3900"></div><div class="field"><label for="shieldSelect">Budget protections</label><select id="shieldSelect"><option value="0">Aucune — 0 crédits</option><option value="400">Protection légère — 400</option><option value="650">Protection régénérante — 650</option><option value="1000" selected>Protection lourde — 1 000</option></select></div><div class="field"><label for="abilityInput">Budget compétences</label><input id="abilityInput" type="number" min="0" max="9000" step="50" value="400"></div><button class="button button-primary" id="budgetButton">CALCULER MON BUDGET <span>↗</span></button></div><div class="budget-result" id="budgetResult" aria-live="polite"><span>CRÉDITS RESTANTS</span><strong>2 500</strong><p>Après les protections et les compétences prévues.</p></div><p class="data-note">Outil de suivi de budget uniquement. Les prix et achats disponibles peuvent varier : vérifie toujours la boutique en jeu.</p></div></section>
 </main>
 <footer><a class="brand footer-brand" href="#home"><span class="brand-mark">TV</span><span>TIMS<span class="brand-light">VALORANT</span></span></a><p>FAN-MADE WEBSITE • NON AFFILIÉ À RIOT GAMES</p><a href="#home" class="back-top">RETOUR EN HAUT ↑</a></footer>
-<script src="script.js?v=11"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="script.js?v=12"></script>
 </body></html>
