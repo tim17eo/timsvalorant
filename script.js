@@ -329,3 +329,145 @@ document.addEventListener("DOMContentLoaded", function () {
   }
   console.info("TimsValorant : outils chargés.");
 });
+
+/* Authentification et profils persistants avec Supabase */
+document.addEventListener("DOMContentLoaded", function () {
+  const accountStatus = document.getElementById("accountStatus");
+  const authForms = document.getElementById("accountAuthForms");
+  const signupForm = document.getElementById("signupForm");
+  const loginForm = document.getElementById("loginForm");
+  const profileBox = document.getElementById("accountProfile");
+  const profileForm = document.getElementById("profileForm");
+  if (!accountStatus || !authForms || !signupForm || !loginForm || !profileBox || !profileForm) return;
+
+  const SUPABASE_URL = "https://mwzsisojquzzjbthxvfl.supabase.co";
+  const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_jQOjtI99RK2auSfXhEOSyQ_9WgA2oV6";
+  if (!window.supabase || !window.supabase.createClient) {
+    accountStatus.textContent = "Le service de comptes n’a pas pu être chargé. Actualise la page dans quelques instants.";
+    accountStatus.classList.add("error");
+    return;
+  }
+  const client = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
+  const agentNames = ["Astra","Brimstone","Clove","Harbor","Miks","Omen","Viper","Iso","Jett","Neon","Phoenix","Raze","Reyna","Waylay","Yoru","Breach","Fade","Gekko","KAY/O","Skye","Sova","Tejo","Chamber","Cypher","Deadlock","Killjoy","Sage","Veto","Vyse"];
+  const mapOptions = document.getElementById("favoriteMap");
+  const mapSelects = ["signupMap","profileMap"].map(id => document.getElementById(id));
+  const agentSelects = ["signupAgent","profileAgent"].map(id => document.getElementById(id));
+  const mapsMarkup = mapOptions ? mapOptions.innerHTML : "";
+  mapSelects.forEach(select => { if (select) select.innerHTML = mapsMarkup; });
+  agentSelects.forEach(select => {
+    if (select) select.innerHTML = agentNames.map(name => '<option value="' + name + '">' + name + '</option>').join("");
+  });
+
+  function setStatus(message, type) {
+    accountStatus.textContent = message;
+    accountStatus.classList.remove("success","error");
+    if (type) accountStatus.classList.add(type);
+  }
+  function showLoggedOut() {
+    authForms.hidden = false;
+    profileBox.hidden = true;
+  }
+  async function showProfile(user) {
+    if (!user) { showLoggedOut(); return; }
+    const { data, error } = await client.from("profiles").select("username,favorite_map,favorite_agent").eq("id", user.id).maybeSingle();
+    if (error) {
+      setStatus("Connecté, mais le profil n’est pas encore accessible. Vérifie que le script SQL a bien été exécuté dans Supabase.", "error");
+      showLoggedOut();
+      return;
+    }
+    if (!data) {
+      setStatus("Compte connecté. Le profil est en cours de création ; actualise la page dans un instant.", "success");
+      showLoggedOut();
+      return;
+    }
+    authForms.hidden = true;
+    profileBox.hidden = false;
+    document.getElementById("profileWelcome").textContent = "BIENVENUE, " + data.username;
+    document.getElementById("profileUsername").value = data.username || "";
+    document.getElementById("profileMap").value = data.favorite_map || "";
+    document.getElementById("profileAgent").value = data.favorite_agent || "";
+    setStatus("Tu es connecté. Ton profil est synchronisé avec ton compte.", "success");
+  }
+
+  signupForm.addEventListener("submit", async event => {
+    event.preventDefault();
+    const username = document.getElementById("signupUsername").value.trim();
+    const email = document.getElementById("signupEmail").value.trim();
+    const password = document.getElementById("signupPassword").value;
+    const favorite_map = document.getElementById("signupMap").value;
+    const favorite_agent = document.getElementById("signupAgent").value;
+    if (username.length < 3 || username.length > 20) {
+      setStatus("Choisis un pseudo de 3 à 20 caractères.", "error"); return;
+    }
+    setStatus("Création de ton compte…");
+    const { data, error } = await client.auth.signUp({
+      email, password,
+      options: {
+        emailRedirectTo: window.location.origin + window.location.pathname,
+        data: { username, favorite_map, favorite_agent }
+      }
+    });
+    if (error) { setStatus(error.message, "error"); return; }
+    if (data.session) {
+      await showProfile(data.user);
+    } else {
+      setStatus("Compte créé ! Consulte ta boîte mail pour confirmer ton adresse, puis connecte-toi ici. Pense à vérifier les courriers indésirables.", "success");
+      signupForm.reset();
+    }
+  });
+
+  loginForm.addEventListener("submit", async event => {
+    event.preventDefault();
+    setStatus("Connexion en cours…");
+    const email = document.getElementById("loginEmail").value.trim();
+    const password = document.getElementById("loginPassword").value;
+    const { data, error } = await client.auth.signInWithPassword({ email, password });
+    if (error) { setStatus("Connexion impossible : vérifie ton adresse e-mail, ton mot de passe et la confirmation de ton adresse.", "error"); return; }
+    await showProfile(data.user);
+  });
+
+  profileForm.addEventListener("submit", async event => {
+    event.preventDefault();
+    const { data: userData } = await client.auth.getUser();
+    if (!userData.user) { showLoggedOut(); setStatus("Reconnecte-toi pour modifier ton profil.", "error"); return; }
+    const username = document.getElementById("profileUsername").value.trim();
+    if (username.length < 3 || username.length > 20) {
+      setStatus("Choisis un pseudo de 3 à 20 caractères.", "error"); return;
+    }
+    setStatus("Enregistrement des modifications…");
+    const updates = {
+      username,
+      favorite_map: document.getElementById("profileMap").value,
+      favorite_agent: document.getElementById("profileAgent").value,
+      updated_at: new Date().toISOString()
+    };
+    const { error } = await client.from("profiles").update(updates).eq("id", userData.user.id);
+    if (error) {
+      setStatus(error.code === "23505" ? "Ce pseudo est déjà utilisé. Choisis-en un autre." : "Impossible d’enregistrer : vérifie la configuration de la table profiles.", "error");
+      return;
+    }
+    await showProfile(userData.user);
+  });
+
+  document.getElementById("logoutButton").addEventListener("click", async () => {
+    const { error } = await client.auth.signOut();
+    if (error) { setStatus("La déconnexion a échoué. Réessaie.", "error"); return; }
+    showLoggedOut();
+    setStatus("Tu es déconnecté.", "success");
+  });
+
+  client.auth.onAuthStateChange((event, session) => {
+    if (event === "SIGNED_OUT") {
+      showLoggedOut();
+      setStatus("Tu es déconnecté.");
+    } else if (event === "SIGNED_IN" && session && session.user) {
+      window.setTimeout(() => showProfile(session.user), 0);
+    }
+  });
+
+  client.auth.getSession().then(({ data, error }) => {
+    if (error) { setStatus("Impossible de vérifier ta session. Actualise la page.", "error"); return; }
+    if (data.session) showProfile(data.session.user);
+    else { showLoggedOut(); setStatus("Crée un compte ou connecte-toi pour retrouver ton profil sur tes appareils."); }
+  });
+});
