@@ -615,13 +615,20 @@ document.addEventListener("DOMContentLoaded", function () {
 document.addEventListener("DOMContentLoaded",function(){
  const root=document.getElementById("crosshair");if(!root)return;
  const ids=["crosshairColor","crosshairLength","crosshairGap","crosshairThickness","crosshairOpacity","crosshairCenterDot","crosshairOutline"];
- const el=id=>document.getElementById(id),preview=el("crosshairPreview"),status=el("crosshairStatus");
- const presets={classic:{color:"#00ff9c",length:5,gap:3,thickness:2,opacity:100,dot:false,outline:true},dot:{color:"#ffffff",length:1,gap:0,thickness:2,opacity:100,dot:true,outline:true},small:{color:"#00d9ff",length:3,gap:1,thickness:1,opacity:100,dot:false,outline:false},open:{color:"#ffff00",length:7,gap:6,thickness:2,opacity:90,dot:false,outline:true}};
- function draw(){const v={color:el(ids[0]).value,length:+el(ids[1]).value,gap:+el(ids[2]).value,thickness:+el(ids[3]).value,opacity:+el(ids[4]).value,dot:el(ids[5]).checked,outline:el(ids[6]).checked};preview.style.setProperty("--ch-color",v.color);preview.style.setProperty("--ch-opacity",v.opacity/100);preview.style.setProperty("--ch-length",v.length*3+"px");preview.style.setProperty("--ch-gap",v.gap*3+"px");preview.style.setProperty("--ch-thickness",v.thickness*2+"px");preview.style.setProperty("--ch-outline",v.outline?"2px":"0px");preview.classList.toggle("has-dot",v.dot);["Length","Gap","Thickness"].forEach((n,i)=>el("crosshair"+n+"Value").textContent=[v.length,v.gap,v.thickness][i]);el("crosshairOpacityValue").textContent=v.opacity+"%";return v;}
+ const el=id=>document.getElementById(id),preview=el("crosshairPreview"),status=el("crosshairStatus"),codeOutput=el("crosshairCode");
+ const presets={classic:{color:"#00ff9c",length:5,gap:3,thickness:2,opacity:100,dot:false,outline:true},dot:{color:"#ffffff",length:1,gap:0,thickness:2,opacity:100,dot:true,outline:false},small:{color:"#00d9ff",length:3,gap:1,thickness:1,opacity:100,dot:false,outline:false},open:{color:"#ffff00",length:7,gap:6,thickness:2,opacity:90,dot:false,outline:true}};
+ function makeCode(v){
+  const hex=v.color.replace("#","").toUpperCase()+"FF";
+  const parts=["0","P","c","8","u",hex,"h","0","o",v.outline?"1":"0"];
+  if(v.outline)parts.push("a","1","t","1");
+  parts.push("d",v.dot?"1":"0","f","0","0t",String(v.thickness),"0l",String(v.length),"0o",String(v.gap),"0a",(v.opacity/100).toString(),"0f","0","1b","0");
+  return parts.join(";");
+ }
+ function draw(){const v={color:el(ids[0]).value,length:+el(ids[1]).value,gap:+el(ids[2]).value,thickness:+el(ids[3]).value,opacity:+el(ids[4]).value,dot:el(ids[5]).checked,outline:el(ids[6]).checked};preview.style.setProperty("--ch-color",v.color);preview.style.setProperty("--ch-opacity",v.opacity/100);preview.style.setProperty("--ch-length",v.length*3+"px");preview.style.setProperty("--ch-gap",v.gap*3+"px");preview.style.setProperty("--ch-thickness",v.thickness*2+"px");preview.style.setProperty("--ch-outline",v.outline?"2px":"0px");preview.classList.toggle("has-dot",v.dot);["Length","Gap","Thickness"].forEach((n,i)=>el("crosshair"+n+"Value").textContent=[v.length,v.gap,v.thickness][i]);el("crosshairOpacityValue").textContent=v.opacity+"%";const code=makeCode(v);if(codeOutput)codeOutput.textContent=code;return {...v,code};}
  function apply(v){el(ids[0]).value=v.color;el(ids[1]).value=v.length;el(ids[2]).value=v.gap;el(ids[3]).value=v.thickness;el(ids[4]).value=v.opacity;el(ids[5]).checked=v.dot;el(ids[6]).checked=v.outline;draw();}
  ids.forEach(id=>el(id).addEventListener("input",draw));
  root.querySelectorAll("[data-crosshair-preset]").forEach(b=>b.addEventListener("click",()=>apply(presets[b.dataset.crosshairPreset])));
  el("crosshairRandom").addEventListener("click",()=>apply({color:["#00ff9c","#ffffff","#ff4655","#00d9ff","#ffff00","#ff70d9"][Math.floor(Math.random()*6)],length:1+Math.floor(Math.random()*9),gap:Math.floor(Math.random()*8),thickness:1+Math.floor(Math.random()*4),opacity:80+Math.floor(Math.random()*5)*5,dot:Math.random()>.7,outline:Math.random()>.25}));
- el("crosshairCopy").addEventListener("click",async()=>{const v=draw();const summary="Réglages de viseur TimsValorant\nCouleur : "+v.color+"\nLongueur : "+v.length+"\nÉcartement : "+v.gap+"\nÉpaisseur : "+v.thickness+"\nOpacité : "+v.opacity+"%\nPoint central : "+(v.dot?"Oui":"Non")+"\nContour : "+(v.outline?"Oui":"Non");try{await navigator.clipboard.writeText(summary);status.textContent="Réglages copiés !";}catch(e){status.textContent="Copie indisponible sur ce navigateur."; }});
+ el("crosshairCopy").addEventListener("click",async()=>{const v=draw();try{await navigator.clipboard.writeText(v.code);status.textContent="Code VALORANT copié !";}catch(e){status.textContent="Copie indisponible : sélectionne le code affiché et copie-le manuellement."; }});
  apply(presets.classic);
 });
