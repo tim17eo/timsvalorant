@@ -113,16 +113,38 @@ document.addEventListener("DOMContentLoaded", function () {
     agentCompareA.innerHTML=opts;agentCompareB.innerHTML=opts;
     agentCompareA.value="Jett";agentCompareB.value="Raze";
   }
+  const mapRoleBonuses={
+    Abyss:{Duelliste:0.8,Initiateur:0.7,Contrôleur:0.4,Sentinelle:0.5},
+    Ascent:{Duelliste:0.6,Initiateur:0.9,Contrôleur:0.7,Sentinelle:0.8},
+    Bind:{Duelliste:0.8,Initiateur:0.7,Contrôleur:0.9,Sentinelle:0.4},
+    Breeze:{Duelliste:0.9,Initiateur:0.8,Contrôleur:0.7,Sentinelle:0.4},
+    Corrode:{Duelliste:0.7,Initiateur:0.8,Contrôleur:0.8,Sentinelle:0.6},
+    Fracture:{Duelliste:0.8,Initiateur:0.9,Contrôleur:0.7,Sentinelle:0.5},
+    Haven:{Duelliste:0.8,Initiateur:0.9,Contrôleur:0.7,Sentinelle:0.6},
+    Icebox:{Duelliste:0.9,Initiateur:0.7,Contrôleur:0.8,Sentinelle:0.6},
+    Lotus:{Duelliste:0.8,Initiateur:0.8,Contrôleur:0.9,Sentinelle:0.6},
+    Pearl:{Duelliste:0.7,Initiateur:0.8,Contrôleur:0.8,Sentinelle:0.7},
+    Split:{Duelliste:0.8,Initiateur:0.8,Contrôleur:0.9,Sentinelle:0.8},
+    Summit:{Duelliste:0.8,Initiateur:0.8,Contrôleur:0.7,Sentinelle:0.7},
+    Sunset:{Duelliste:0.8,Initiateur:0.8,Contrôleur:0.9,Sentinelle:0.7}
+  };
   function agentMapScore(map,agentName){
     const index=map.agents.indexOf(agentName);
-    return index===-1?4.5:10-index*1.25;
+    const agent=agents.find(a=>a.name===agentName);
+    if(index>=0)return Math.max(7.2,9.8-index*0.55);
+    const role=agent?agent.role:"";
+    const roleFit=(mapRoleBonuses[map.name]||{})[role]||0.5;
+    const nameSeed=agentName.split("").reduce((sum,ch)=>sum+ch.charCodeAt(0),0);
+    const smallVariation=((nameSeed%5)-2)*0.12;
+    return Math.max(5.2,Math.min(7.1,5.7+roleFit+smallVariation));
   }
   function agentMapReason(map,agentName,score){
-    const agent=agents.find(a=>a.name===agentName);
     const index=map.agents.indexOf(agentName);
-    if(index===0)return "C’est le premier agent de notre sélection pour "+map.name+".";
-    if(index>0)return "Il figure dans notre sélection recommandée pour "+map.name+" (position "+(index+1)+").";
-    return "Il ne figure pas dans notre sélection principale pour "+map.name+". Cela ne veut pas dire qu’il est mauvais : ton niveau et ton style comptent aussi.";
+    const agent=agents.find(a=>a.name===agentName);
+    if(index===0)return "Top pick de notre sélection sur "+map.name+" : son kit correspond particulièrement bien aux besoins de cette map.";
+    if(index>0)return "Présent dans notre sélection pour "+map.name+" (rang "+(index+1)+"/5), avec un kit intéressant pour cette configuration.";
+    const role=agent?agent.role.toLowerCase():"";
+    return "Il n’est pas dans notre top 5 éditorial sur "+map.name+", mais son rôle de "+role+" peut rester utile selon la composition et ton style de jeu.";
   }
   function renderAgentCompare(){
     if(!agentCompareMap||!agentCompareA||!agentCompareB||!agentCompareResult)return;
